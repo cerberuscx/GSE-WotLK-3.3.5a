@@ -185,26 +185,28 @@ end
 --- Return the Active Sequence Version for a Sequence.
 function GSE.GetActiveSequenceVersion(sequenceName)
   local classid = GSE.GetCurrentClassID()
-  if GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][sequenceName]) then
+  if not GSELibrary[GSE.GetCurrentClassID()] or GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][sequenceName]) then
     classid = 0
   end
   -- Set to default or 1 if no default
   local vers = 1
-  if not GSE.isEmpty(GSELibrary[classid][sequenceName].Default) then
-    vers = GSELibrary[classid][sequenceName].Default
-  end
-  if not GSE.isEmpty(GSELibrary[classid][sequenceName].PVP) and GSE.PVPFlag then
-    vers = GSELibrary[classid][sequenceName].PVP
-  elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Raid) and GSE.inRaid then
-    vers = GSELibrary[classid][sequenceName].Raid
-  elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Mythic) and GSE.inMythic then
-    vers = GSELibrary[classid][sequenceName].Mythic
-  elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Dungeon) and GSE.inDungeon then
-    vers = GSELibrary[classid][sequenceName].Dungeon
-  elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Heroic) and GSE.inHeroic then
-    vers = GSELibrary[classid][sequenceName].Heroic
-  elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Party) and GSE.inParty then
-    vers = GSELibrary[classid][sequenceName].Party
+  if GSELibrary[classid] and GSELibrary[classid][sequenceName] then
+    if not GSE.isEmpty(GSELibrary[classid][sequenceName].Default) then
+      vers = GSELibrary[classid][sequenceName].Default
+    end
+    if not GSE.isEmpty(GSELibrary[classid][sequenceName].PVP) and GSE.PVPFlag then
+      vers = GSELibrary[classid][sequenceName].PVP
+    elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Raid) and GSE.inRaid then
+      vers = GSELibrary[classid][sequenceName].Raid
+    elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Mythic) and GSE.inMythic then
+      vers = GSELibrary[classid][sequenceName].Mythic
+    elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Dungeon) and GSE.inDungeon then
+      vers = GSELibrary[classid][sequenceName].Dungeon
+    elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Heroic) and GSE.inHeroic then
+      vers = GSELibrary[classid][sequenceName].Heroic
+    elseif not GSE.isEmpty(GSELibrary[classid][sequenceName].Party) and GSE.inParty then
+      vers = GSELibrary[classid][sequenceName].Party
+    end
   end
   return vers
 end
@@ -510,10 +512,10 @@ function GSE.CleanOrphanSequences()
     local found = false
     local mname, mtexture, mbody = GetMacroInfo(macid)
     if not GSE.isEmpty(mname) then
-      if not GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][mname]) then
+      if GSELibrary[GSE.GetCurrentClassID()] and not GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][mname]) then
         found = true
       end
-      if not GSE.isEmpty(GSELibrary[0][mname]) then
+      if GSELibrary[0] and not GSE.isEmpty(GSELibrary[0][mname]) then
         found = true
       end
 
@@ -798,7 +800,7 @@ function GSE.UpdateMacroString()
   for macid = 1, maxmacros do
     local mname, mtexture, mbody = GetMacroInfo(macid)
     if not GSE.isEmpty(mname) then
-      if not GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][mname]) then
+      if GSELibrary[GSE.GetCurrentClassID()] and not GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][mname]) then
         EditMacro(macid, nil, nil,  GSE.CreateMacroString(mname))
         GSE.PrintDebugMessage(string.format("Updating macro %s to %s", mname, GSE.CreateMacroString(mname)))
       end
