@@ -15,6 +15,11 @@ function GSE.DeleteSequence(classid, sequenceName)
 end
 
 function GSE.CloneSequence(sequence, keepcomments)
+  if GSE.isEmpty(sequence) then
+    GSE.PrintDebugMessage("CloneSequence: sequence is nil or empty", "Storage")
+    return nil
+  end
+  
   local newsequence = {}
 
   for k,v in pairs(sequence) do
@@ -22,8 +27,10 @@ function GSE.CloneSequence(sequence, keepcomments)
   end
 
   newsequence.MacroVersions = {}
-  for k,v in ipairs(sequence.MacroVersions) do
-    newsequence.MacroVersions[tonumber(k)] = GSE.CloneMacroVersion(v, keepcomments)
+  if not GSE.isEmpty(sequence.MacroVersions) then
+    for k,v in ipairs(sequence.MacroVersions) do
+      newsequence.MacroVersions[tonumber(k)] = GSE.CloneMacroVersion(v, keepcomments)
+    end
   end
 
   return newsequence
@@ -31,6 +38,10 @@ end
 
 --- This function clones the Macro Version part of a sequence.
 function GSE.CloneMacroVersion(macroversion, keepcomments)
+  if GSE.isEmpty(macroversion) then
+    return {}
+  end
+  
   local retseq = {}
   for k,v in ipairs(macroversion) do
     if GSE.isEmpty(string.find(v, '--', 1, true)) then
@@ -759,7 +770,7 @@ function GSE.compareValues(a, b, description)
       end
     end
   else
-    if not GSE.isEmpty(a) then
+    if not GSE.isEmpty(b) then
       GSE.PrintDebugMessage(description .. " in Sequence 2 but not in Sequence 1", GNOME)
       match = false
     end
@@ -898,18 +909,25 @@ end
 
 --- Return the Macro Icon for the specified Sequence
 function GSE.GetMacroIcon(classid, sequenceIndex)
+  if GSE.isEmpty(classid) or GSE.isEmpty(sequenceIndex) then
+    return GSEOptions.DefaultDisabledMacroIcon or "INV_MISC_QUESTIONMARK"
+  end
+  
   classid = tonumber(classid)
   GSE.PrintDebugMessage("sequenceIndex: " .. (GSE.isEmpty(sequenceIndex) and "No value" or sequenceIndex), GNOME)
-  classid = tonumber(classid)
   local macindex = GetMacroIndexByName(sequenceIndex)
   local a, iconid, c =  GetMacroInfo(macindex)
   if not GSE.isEmpty(a) then
     GSE.PrintDebugMessage("Macro Found " .. a .. " with iconid " .. (GSE.isEmpty(iconid) and "of no value" or iconid) .. " " .. (GSE.isEmpty(iconid) and L["with no body"] or c), GNOME)
   else
     GSE.PrintDebugMessage("No Macro Found. Possibly different spec for Sequence " .. sequenceIndex , GNOME)
-    return GSEOptions.DefaultDisabledMacroIcon
+    return GSEOptions.DefaultDisabledMacroIcon or "INV_MISC_QUESTIONMARK"
   end
 
+  if GSE.isEmpty(GSELibrary[classid]) then
+    return GSEOptions.DefaultDisabledMacroIcon or "INV_MISC_QUESTIONMARK"
+  end
+  
   local sequence = GSELibrary[classid][sequenceIndex]
   if(sequence==nil) then return "INV_MISC_QUESTIONMARK" end
   if GSE.isEmpty(sequence.Icon) and GSE.isEmpty(iconid) then
@@ -1015,7 +1033,17 @@ function GSE.UpdateIcon(self, reset)
   local step = self:GetAttribute('step') or 1
   
   local gsebutton = self:GetName()
+  if GSE.isEmpty(GSE.SequencesExec) or GSE.isEmpty(GSE.SequencesExec[gsebutton]) then
+    GSE.PrintDebugMessage("UpdateIcon: No execution sequence found for " .. gsebutton, "Storage")
+    return
+  end
+  
   local executionseq = GSE.SequencesExec[gsebutton]
+  if GSE.isEmpty(executionseq[step]) then
+    GSE.PrintDebugMessage("UpdateIcon: No command at step " .. step .. " for " .. gsebutton, "Storage")
+    return
+  end
+  
   local commandline, foundSpell, notSpell = executionseq[step], false, ''
   for cmd, etc in gmatch(commandline or '', '/(%w+)%s+([^\n]+)') do
     if Statics.CastCmds[strlower(cmd)] or strlower(cmd) == "castsequence" then

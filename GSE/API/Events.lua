@@ -420,30 +420,55 @@ end
 
 
 function GSE:ProcessOOCQueue()
+  if GSE.isEmpty(GSE.OOCQueue) then
+    return
+  end
+  
   for k,v in ipairs(GSE.OOCQueue) do
     if not InCombatLockdown() then
-	
-      if v.action == "UpdateSequence" then
-        GSE.OOCUpdateSequence(v.name, v.macroversion)
-      elseif v.action == "Save" then
-        GSE.OOCAddSequenceToCollection(v.sequencename, v.sequence, v.classid)
-      elseif v.action == "Replace" then
-	 DEFAULT_CHAT_FRAME:AddMessage("classid"..v.classid)
-	 DEFAULT_CHAT_FRAME:AddMessage("sequencename"..v.sequencename)
-        if GSELibrary[v.classid][v.sequencename]==nil then
-          GSELibrary[v.classid][v.sequencename]=''
+      local success, err = pcall(function()
+        if GSE.isEmpty(v) or GSE.isEmpty(v.action) then
+          GSE.PrintDebugMessage("Invalid OOC Queue entry", "Events")
+          return
         end
-        if (GSE.isEmpty(GSELibrary[v.classid][v.sequencename])) then
+        
+        if v.action == "UpdateSequence" then
+          GSE.OOCUpdateSequence(v.name, v.macroversion)
+        elseif v.action == "Save" then
           GSE.OOCAddSequenceToCollection(v.sequencename, v.sequence, v.classid)
-        else
-          GSELibrary[v.classid][v.sequencename] = v.sequence
+        elseif v.action == "Replace" then
+          -- Remove debug messages that spam chat
+          if GSE.isEmpty(v.classid) or GSE.isEmpty(v.sequencename) then
+            GSE.PrintDebugMessage("Replace action missing classid or sequencename", "Events")
+            return
+          end
+          
+          if GSE.isEmpty(GSELibrary[v.classid]) then
+            GSELibrary[v.classid] = {}
+          end
+          
+          if GSELibrary[v.classid][v.sequencename]==nil then
+            GSELibrary[v.classid][v.sequencename]=''
+          end
+          if (GSE.isEmpty(GSELibrary[v.classid][v.sequencename])) then
+            GSE.OOCAddSequenceToCollection(v.sequencename, v.sequence, v.classid)
+          else
+            GSELibrary[v.classid][v.sequencename] = v.sequence
+          end
+          if not GSE.isEmpty(v.sequence) and not GSE.isEmpty(v.sequence.MacroVersions) then
+            GSE.OOCUpdateSequence(v.sequencename, v.sequence.MacroVersions[GSE.GetActiveSequenceVersion(v.sequencename)])
+          end
+        elseif v.action == "openviewer" then
+          GSE.GUIShowViewer()
+        elseif v.action == "CheckMacroCreated" then
+          GSE.OOCCheckMacroCreated(v.sequencename, v.create)
         end
-        GSE.OOCUpdateSequence(v.sequencename, v.sequence.MacroVersions[GSE.GetActiveSequenceVersion(v.sequencename)])
-      elseif v.action == "openviewer" then
-        GSE.GUIShowViewer()
-      elseif v.action == "CheckMacroCreated" then
-        GSE.OOCCheckMacroCreated(v.sequencename, v.create)
+      end)
+      
+      if not success then
+        GSE.PrintDebugMessage("Error processing OOC Queue item: " .. tostring(err), "Events")
       end
+      
       GSE.OOCQueue[k] = nil
     end
   end
