@@ -26,3 +26,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Git credentials - NEVER commit this!
+.git-credentials
