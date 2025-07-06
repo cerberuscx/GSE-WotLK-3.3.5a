@@ -25,6 +25,43 @@ viewframe.panels = {}
 viewframe.SequenceName = ""
 viewframe.ClassID = 0
 
+-- Set maximum resize bounds based on screen size
+local maxHeight = GetScreenHeight() - 40
+local maxWidth = GetScreenWidth() - 40
+viewframe.frame:SetMaxResize(maxWidth, maxHeight)
+
+-- Add resize constraints to prevent window from going off screen
+viewframe.frame:SetScript("OnSizeChanged", function ()
+  local Left, Bottom, Width, Height = viewframe.frame:GetBoundsRect()
+  local screenHeight = GetScreenHeight()
+  local screenWidth = GetScreenWidth()
+  local maxHeight = screenHeight - 40  -- Leave some space at top/bottom
+  local maxWidth = screenWidth - 40    -- Leave some space at sides
+  
+  -- Check if we need to constrain the size
+  local needsResize = false
+  local newHeight = Height
+  local newWidth = Width
+  
+  if Height > maxHeight then
+    newHeight = maxHeight
+    needsResize = true
+  end
+  
+  if Width > maxWidth then
+    newWidth = maxWidth
+    needsResize = true
+  end
+  
+  -- Apply constraints if needed
+  if needsResize then
+    viewframe.frame:SetHeight(newHeight)
+    viewframe.frame:SetWidth(newWidth)
+  end
+  
+  viewframe:DoLayout()
+end)
+
 function viewframe:clearpanels(widget, selected)
   GSE.PrintDebugMessage("widget = " .. widget:GetKey(), "GUI")
   for k,v in pairs(viewframe.panels) do

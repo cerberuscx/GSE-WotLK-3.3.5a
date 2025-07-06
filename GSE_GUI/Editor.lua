@@ -51,11 +51,40 @@ editframe:SetCallback("OnClose", function (self)
   end
 end)
 editframe:SetLayout("List")
+-- Set maximum resize bounds based on screen size
+local maxHeight = GetScreenHeight() - 40
+local maxWidth = GetScreenWidth() - 40
+editframe.frame:SetMaxResize(maxWidth, maxHeight)
 editframe.frame:SetScript("OnSizeChanged", function ()
   editframe.Left, editframe.Bottom, editframe.Width, editframe.Height = editframe.frame:GetBoundsRect()
-  if editframe.Height > GetScreenHeight() then
-    editframe.Height = GetScreenHeight() - 10
+  local screenHeight = GetScreenHeight()
+  local screenWidth = GetScreenWidth()
+  local maxHeight = screenHeight - 40  -- Leave some space at top/bottom
+  local maxWidth = screenWidth - 40    -- Leave some space at sides
+  
+  -- Check if we need to constrain the size
+  local needsResize = false
+  local newHeight = editframe.Height
+  local newWidth = editframe.Width
+  
+  if editframe.Height > maxHeight then
+    newHeight = maxHeight
+    needsResize = true
   end
+  
+  if editframe.Width > maxWidth then
+    newWidth = maxWidth
+    needsResize = true
+  end
+  
+  -- Apply constraints if needed
+  if needsResize then
+    editframe.frame:SetHeight(newHeight)
+    editframe.frame:SetWidth(newWidth)
+    editframe.Height = newHeight
+    editframe.Width = newWidth
+  end
+  
   GSE.GUISelectEditorTab(editframe.ContentContainer, "Resize", editframe.SelectedTab)
   editframe:DoLayout()
 end)
