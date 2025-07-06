@@ -29,3 +29,6 @@ Thumbs.db
 
 # Git credentials - NEVER commit this!
 .git-credentials
+
+# Internal development documentation
+CLAUDE.md
