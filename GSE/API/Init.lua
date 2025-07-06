@@ -32,7 +32,7 @@ end
 --- Prints <code>filepath</code>to the chat handler.  This accepts an optional
 --    <code>title</code> to be prepended to that message.
 function GSE.Print(message, title)
-  -- stroe this for later on.
+  -- store this for later on.
   if not GSE.isEmpty(title) then
     message = GSEOptions.TitleColour .. title .. Statics.StringReset .." " .. message
   end

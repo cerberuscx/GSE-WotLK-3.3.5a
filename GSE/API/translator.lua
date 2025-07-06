@@ -285,9 +285,7 @@ function GSE.GetConditionalsFromString(str)
      str = string.sub(str, rightstr + 1)
      GSE.PrintDebugMessage("str changed to: " .. str, GNOME)
   end
-  if not cleanNewLines then
-    str = string.match(str, "^%s*(.-)%s*$")
-  end
+  str = string.match(str, "^%s*(.-)%s*$")
   -- Check for resets
   GSE.PrintDebugMessage("checking for reset= in " .. str, GNOME)
   local resetleft = string.find(str, "reset=")
