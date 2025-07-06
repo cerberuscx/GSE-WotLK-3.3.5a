@@ -51,10 +51,12 @@ editframe:SetCallback("OnClose", function (self)
   end
 end)
 editframe:SetLayout("List")
--- Set maximum resize bounds based on screen size
+-- Set resize bounds based on screen size
 local maxHeight = GetScreenHeight() - 40
 local maxWidth = GetScreenWidth() - 40
 editframe.frame:SetMaxResize(maxWidth, maxHeight)
+-- Set minimum size to prevent content overflow
+editframe.frame:SetMinResize(600, 500)
 editframe.frame:SetScript("OnSizeChanged", function ()
   editframe.Left, editframe.Bottom, editframe.Width, editframe.Height = editframe.frame:GetBoundsRect()
   local screenHeight = GetScreenHeight()
@@ -253,7 +255,9 @@ function GSE:GUIDrawMetadataEditor(container)
 
   local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
   scrollcontainer:SetFullWidth(true)
-  scrollcontainer:SetHeight(editframe.Height - 260)
+  -- Better height calculation that accounts for minimum space needed
+  local availableHeight = math.max(100, editframe.Height - 280) -- Ensure minimum height
+  scrollcontainer:SetHeight(availableHeight)
   scrollcontainer:SetLayout("Fill") -- important!
 
   local contentcontainer = AceGUI:Create("ScrollFrame")
@@ -505,14 +509,16 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local layoutcontainer = AceGUI:Create("SimpleGroup")
   layoutcontainer:SetFullWidth(true)
-  layoutcontainer:SetHeight(editframe.Height - 260 )
+  layoutcontainer:SetHeight(math.max(100, editframe.Height - 280))
   layoutcontainer:SetLayout("Flow") -- important!
 
   local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
   --scrollcontainer:SetFullWidth(true)
   --scrollcontainer:SetFullHeight(true) -- probably?
   scrollcontainer:SetWidth(editframe.Width - 200)
-  scrollcontainer:SetHeight(editframe.Height - 260)
+  -- Better height calculation that accounts for minimum space needed
+  local availableHeight = math.max(100, editframe.Height - 280) -- Ensure minimum height
+  scrollcontainer:SetHeight(availableHeight)
   scrollcontainer:SetLayout("Fill") -- important!
 
   local contentcontainer = AceGUI:Create("ScrollFrame")
