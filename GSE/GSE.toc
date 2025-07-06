@@ -68,6 +68,7 @@ API\StaticPopup.lua
 API\StringFunctions.lua
 API\CharacterFunctions.lua
 SampleMacros.lua
+SampleMacros_Documented.lua
 API\Storage.lua
 API\Translator.lua
 API\Plugins.lua
