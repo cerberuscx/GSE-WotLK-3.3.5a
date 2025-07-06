@@ -237,7 +237,7 @@ function GSE.TranslateSpell(str, fromLocale, toLocale, cleanNewLines)
       GSE.PrintDebugMessage("Did not find : " .. etc .. " in " .. fromLocale .. " Hash table checking shadow table", GNOME)
       -- try the shadow table
       local nfoundspell = GSE.TranslatorLanguageTables[Statics.TranslationShadow][fromLocale][string.lower(etc)]
-      if GSE.isEmpty(GSE.TranslatorLanguageTables[Statics.TranslationShadow][toLocale][foundspell]) then
+      if not nfoundspell or GSE.isEmpty(GSE.TranslatorLanguageTables[Statics.TranslationShadow][toLocale][nfoundspell]) then
         nfoundspell = false
       end
       if nfoundspell then
