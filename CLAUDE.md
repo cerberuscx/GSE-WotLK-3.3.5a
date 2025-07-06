@@ -60,11 +60,18 @@ The addon has been successfully revived and all critical issues have been fixed:
    - Fixed difficulty checks for 3.3.5a
    - Removed BackdropTemplateMixin usage
 
-3. **Code Quality** (Commits: 66f1049, 334d01c)
+3. **Code Quality** (Commits: 66f1049, 334d01c, 5cd5848, 03581ec)
    - Fixed global variable pollution
    - Removed duplicate library folders
    - Cleaned up dead code
    - Fixed performance issues
+   - Fixed additional global leaks found in sanity check
+
+4. **Defensive Programming** (Commits: b673189, 1117129)
+   - Added comprehensive nil checks for WoW API calls
+   - Protected nested table accesses
+   - Added nil checks before string operations
+   - Fixed undefined variable references
 
 ## Architecture Overview
 
@@ -243,6 +250,11 @@ The addon has been successfully revived and all critical issues have been fixed:
 - `593748b` - Fix WoW 3.3.5a API compatibility issues
 - `334d01c` - Clean up codebase and fix performance issues
 - `a5ebb84` - feat: Add documented sample macros for all classes
+- `317ecf8` - docs: Update CLAUDE.md to document sample macros feature
+- `5cd5848` - fix: Address critical issues found in sanity check
+- `03581ec` - chore: Clean up dead code and improve code quality
+- `b673189` - fix: Add critical nil checks throughout codebase
+- `1117129` - fix: Final sanity check fixes
 
 ## Contributing Guidelines
 
