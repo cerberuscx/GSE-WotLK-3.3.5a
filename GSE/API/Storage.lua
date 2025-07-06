@@ -225,7 +225,7 @@ function GSE.CreateMacroIcon(sequenceName, icon, forceglobalstub)
       GSE.Print(L["Close to Maximum Macros.|r  You can have a maximum of "].. MAX_CHARACTER_MACROS .. L[" macros per character.  You currently have "] .. GSEOptions.EmphasisColour .. numCharacterMacros .. L["|r.  You can also have a  maximum of "] .. MAX_ACCOUNT_MACROS .. L[" macros per Account.  You currently have "] .. GSEOptions.EmphasisColour .. numAccountMacros .. L["|r. As a result this macro was not created.  Please delete some macros and reenter "] .. GSEOptions.CommandColour .. L["/gs|r again."], GNOME)
     else
      -- sequenceid = CreateMacro(sequenceName, (GSEOptions.setDefaultIconQuestionMark and "INV_MISC_QUESTIONMARK" or icon), GSE.CreateMacroString(sequenceName), (forceglobalstub and false or GSE.SetMacroLocation()) )
-     sequenceid = CreateMacro(sequenceName, 1, GSE.CreateMacroString(sequenceName), (forceglobalstub and false or GSE.SetMacroLocation()) )
+     local sequenceid = CreateMacro(sequenceName, 1, GSE.CreateMacroString(sequenceName), (forceglobalstub and false or GSE.SetMacroLocation()) )
 	end
   end
 end
@@ -326,7 +326,7 @@ function GSE.IsLoopSequence(sequence)
     if type(sequence.PostMacro) == "table" then
       if table.getn(sequence.PostMacro) > 0 then
         loopcheck = true
-        GSE.PrintDebugMessage("Setting Loop Check True due to PreMacro", "Storage")
+        GSE.PrintDebugMessage("Setting Loop Check True due to PostMacro", "Storage")
       end
     end
   end
@@ -566,7 +566,7 @@ function GSE.OOCUpdateSequence(name,sequence)
   if pcall(GSE.CheckSequence, sequence) then
     sequence = GSE.CleanMacroVersion(sequence)
     GSE.FixSequence(sequence)
-    tempseq = GSE.CloneMacroVersion(sequence)
+    local tempseq = GSE.CloneMacroVersion(sequence)
 
     local existingbutton = true
     if GSE.isEmpty(_G[name]) then
@@ -849,10 +849,10 @@ end
 --- This removes a macro Stub.
 function GSE.DeleteMacroStub(sequenceName)
   local mname, _, mbody = GetMacroInfo(sequenceName)
-  if mname == sequenceName then
-    trimmedmbody = mbody:gsub("[^%w ]", "")
-    compar = GSE.CreateMacroString(mname)
-    trimmedcompar = compar:gsub("[^%w ]", "")
+  if mname == sequenceName and mbody then
+    local trimmedmbody = mbody:gsub("[^%w ]", "")
+    local compar = GSE.CreateMacroString(mname)
+    local trimmedcompar = compar:gsub("[^%w ]", "")
     if string.lower(trimmedmbody) == string.lower(trimmedcompar) then
       GSE.Print(L[" Deleted Orphaned Macro "] .. mname, GNOME)
       DeleteMacro(sequenceName)

@@ -166,21 +166,22 @@ end
 --- Check if the specID provided matches the plauers current class.
 function GSE.isSpecIDForCurrentClass(specID)
 for k,v in pairs(Statics.wotlkSpecIDList) do
-	if (k==specid) then 
-		value=Statics.wotlkSpecIDList[specID] 
-		local last = string.split( value, "% " )
+	if (k==specID) then 
+		local value=Statics.wotlkSpecIDList[specID]
+		if value then
+			local last = string.split( value, "% " )
 	    local class=string.upper(last[#last])
 		local currentenglishclass, currentclassDisplayName = UnitClass("player")
 		
 		currentenglishclass=string.upper(currentenglishclass)
-		currentclassId=string.upper(currentclassDisplayName)
+		local currentclassId=string.upper(currentclassDisplayName)
 		
 		for k1,v1 in pairs(Statics.wotlkClassIDList) do
 			if (string.upper(v1)==string.upper(class)) then currentclassId=k1 end
 		end
 		
 		return (class==currentenglishclass or specID==currentclassId)
-
+		end
 	end
  end
   
