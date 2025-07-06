@@ -184,15 +184,7 @@ for k,v in pairs(Statics.wotlkSpecIDList) do
 		end
 	end
  end
-  
-  -- local _, specname, specdescription, specicon, _, specrole, specclass = GetSpecializationInfoByID(specID)
-  -- local currentclassDisplayName, currentenglishclass, currentclassId = UnitClass("player")
-  -- if specID > 15 then
-    -- GSE.PrintDebugMessage("Checking if specID " .. specID .. " " .. specclass .. " equals " .. currentenglishclass)
-  -- else
-    -- GSE.PrintDebugMessage("Checking if specID " .. specID .. " equals currentclassid " .. currentclassId)
-  -- end
-  -- return (specclass==currentenglishclass or specID==currentclassId)
+  return false
 end
 
 
