@@ -108,17 +108,21 @@ This revival was done by cerberus after Gummed's WotLK backport was abandoned. T
 
 ## Version History
 
-- **2.2.0-wotlk** (January 2025) - Complete revival for 3.3.5a
+- **2.2.04-wotlk** (January 2025) - Complete revival for 3.3.5a by cerberus
   - Fixed all critical bugs and crashes
-  - Added sample macros
+  - Added sample macros for all classes
   - Full compatibility restoration
+  - Based on Gummed's backport of GSE 2.x
   
-- **2.2.0.3** (Original) - Backported to 3.3.5a by Gummed
+- **2.2.03** - Last known version backported to 3.3.5a by Gummed (abandoned)
+
+Note: Current retail GSE is version 3.2.x and is a complete rewrite by TimothyLuke
 
 ## License
 
-Original work by TimothyLuke. License terms unknown.  
-Revival work provided as-is for community use.
+Original GSE by TimothyLuke is released under the MIT License.  
+This WotLK backport and revival maintains the same open-source spirit.  
+See https://github.com/TimothyLuke/GSE-Advanced-Macro-Compiler for the original project.
 
 ## Support
 
