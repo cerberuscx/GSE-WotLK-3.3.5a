@@ -42,16 +42,20 @@ for tab = 1, GetNumTalentTabs() do
 end
 
 	local name1,icon=GetTalentTabInfo(primarytree,false,false,activeSpec);
-	name1=string.upper(name1)
+	if name1 then
+		name1=string.upper(name1)
+	else
+		name1 = ""
+	end
   local specid;
 
 	  for k,v in pairs(Statics.wotlkSpecIDList) do
 
-		local searchStr=string.upper(v)
+		local searchStr = v and string.upper(v) or ""
 		local st,ed=string.find(searchStr,name1)
 		local isClass,isClass1=UnitClass("player")
-		isClass=string.upper(isClass)
-		isClass1=string.upper(isClass1)
+		isClass = isClass and string.upper(isClass) or ""
+		isClass1 = isClass1 and string.upper(isClass1) or ""
 		local st1,ed1=string.find(searchStr,isClass)
 		local st2,ed2=string.find(searchStr,isClass1)
 			if(st~=nil) then 
