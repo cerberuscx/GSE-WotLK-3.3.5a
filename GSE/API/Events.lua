@@ -108,9 +108,21 @@ function getInstanceInfoLocal()
 end
 --]]
 function GSE:PARTY_MEMBERS_CHANGED()
-if (InCombatLockdown()~=1) then
-GSE:ZONE_CHANGED_NEW_AREA()
-end
+  if (InCombatLockdown()~=1) then
+    -- Handle what GROUP_ROSTER_UPDATE did (doesn't exist in 3.3.5a)
+    -- Serialisation stuff
+    GSE.sendVersionCheck()
+    if not GSE.isEmpty(GSE.UnsavedOptions) and not GSE.isEmpty(GSE.UnsavedOptions["PartyUsers"]) then
+      for k,v in pairs(GSE.UnsavedOptions["PartyUsers"]) do
+        if not (UnitInParty(k) or UnitInRaid(k)) then
+          -- Take them out of the list
+          GSE.UnsavedOptions["PartyUsers"][k] = nil
+        end
+      end
+    end
+    -- Group Team stuff
+    GSE:ZONE_CHANGED_NEW_AREA()
+  end
 end
 function GSE:ZONE_CHANGED_NEW_AREA()
  -- local name, type1, difficulty, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
@@ -144,18 +156,16 @@ local inInstance, instancetype = IsInInstance()
   else
     GSE.PVPFlag = false
   end
-  if difficulty == 23 then
-    GSE.inMythic = true
-  else
-    GSE.inMythic = false
-  end
+  -- Mythic difficulty doesn't exist in 3.3.5a
+  GSE.inMythic = false
   if ((IsInInstance()==1) and (instancetype=="party")) then
     GSE.inDungeon = true
   else
     GSE.inDungeon = false
   end
   
-  if (difficulty == 2 or difficulty == 24 or difficulty==4) then
+  -- In 3.3.5a: 2=Heroic 5-man/25-man normal, 3=10-man Heroic, 4=25-man Heroic
+  if (difficulty == 2 or difficulty == 3 or difficulty == 4) then
     GSE.inHeroic = true
   else
     GSE.inHeroic = false
@@ -310,26 +320,20 @@ function GSE:PLAYER_LOGOUT()
   GSE.PrepareLogout()
 end
 
-function GSE:PLAYER_SPECIALIZATION_CHANGED()
-  GSE.ReloadSequences()
-end
+-- PLAYER_SPECIALIZATION_CHANGED doesn't exist in 3.3.5a
+-- In 3.3.5a, talent changes happen through ACTIVE_TALENT_GROUP_CHANGED
+-- but we already handle reloading sequences elsewhere
 
-function GSE:GROUP_ROSTER_UPDATE(...)
-  -- Serialisation stuff
-  GSE.sendVersionCheck()
-  for k,v in pairs(GSE.UnsavedOptions["PartyUsers"]) do
-    if not (UnitInParty(k) or UnitInRaid(k)) then
-      -- Take them out of the list
-      GSE.UnsavedOptions["PartyUsers"][k] = nil
-    end
+-- GROUP_ROSTER_UPDATE doesn't exist in 3.3.5a
+-- Its functionality has been moved to PARTY_MEMBERS_CHANGED and RAID_ROSTER_UPDATE
 
-  end
-  -- Group Team stuff
-  GSE:ZONE_CHANGED_NEW_AREA()
+function GSE:RAID_ROSTER_UPDATE()
+  -- Handle raid roster changes
+  GSE:PARTY_MEMBERS_CHANGED()
 end
 
 
-GSE:RegisterEvent("GROUP_ROSTER_UPDATE")
+-- GSE:RegisterEvent("GROUP_ROSTER_UPDATE") -- Doesn't exist in 3.3.5a, using PARTY_MEMBERS_CHANGED instead
 GSE:RegisterEvent('PLAYER_LOGOUT')
 GSE:RegisterEvent('PLAYER_ENTERING_WORLD')
 GSE:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -338,6 +342,7 @@ GSE:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED')
 GSE:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 GSE:RegisterEvent("UNIT_FACTION")
 GSE:RegisterEvent("PARTY_MEMBERS_CHANGED")
+GSE:RegisterEvent("RAID_ROSTER_UPDATE") -- 3.3.5a event for raid changes
 
 local function PrintGnomeHelp()
   GSE.Print(L["GnomeSequencer was originally written by semlar of wowinterface.com."], GNOME)

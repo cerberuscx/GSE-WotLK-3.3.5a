@@ -7,7 +7,8 @@ local L = GSE.L
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local frame = CreateFrame("frame", "GSE3", UIParent, BackdropTemplateMixin and "BackdropTemplate" )
+-- BackdropTemplateMixin doesn't exist in 3.3.5a, backdrop is supported by default
+local frame = CreateFrame("frame", "GSE3", UIParent)
 frame:SetSize(500, 300)
 frame:SetPoint("CENTER")
 

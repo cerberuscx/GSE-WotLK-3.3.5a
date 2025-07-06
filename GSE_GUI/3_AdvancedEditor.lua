@@ -10,7 +10,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 local width = GSEOptions.editorWidth
 local height = GSEOptions.editorHeight
 
-local frame = CreateFrame("frame", "GSE3", UIParent, BackdropTemplateMixin and "BackdropTemplate" )
+-- BackdropTemplateMixin doesn't exist in 3.3.5a, backdrop is supported by default
+local frame = CreateFrame("frame", "GSE3", UIParent)
 frame:SetSize(width, height)
 frame:SetPoint("CENTER")
 
