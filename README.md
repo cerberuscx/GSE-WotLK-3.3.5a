@@ -7,7 +7,7 @@ A revival and restoration of Gnome Sequencer Enhanced for World of Warcraft 3.3.
 GSE (Gnome Sequencer Enhanced) is an advanced macro sequencer for World of Warcraft that allows players to create and execute complex macro sequences, bypassing normal macro limitations. This version has been specifically restored and fixed for WoW 3.3.5a compatibility.
 
 **Original Author**: TimothyLuke  
-**Revival & Fixes**: Community effort (January 2025)
+**Revival & Fixes**: cerberus (January 2025)
 
 ## Features
 
@@ -97,7 +97,7 @@ Built using:
 
 ## Contributing
 
-This is a community revival project. The original author (TimothyLuke) abandoned the project. Contributions welcome!
+This revival was done by cerberus after the original author (TimothyLuke) abandoned the project. Contributions welcome!
 
 ### Development Guidelines
 1. Maintain WoW 3.3.5a compatibility
@@ -121,7 +121,7 @@ Revival work provided as-is for community use.
 
 ## Support
 
-This is a community-maintained revival. For issues:
+This revival is maintained by cerberus. For issues:
 1. Check the Issues tab on GitHub
 2. Provide clear reproduction steps
 3. Include any error messages
