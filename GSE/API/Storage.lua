@@ -312,7 +312,7 @@ function GSE.IsLoopSequence(sequence)
     end
   end
   if not GSE.isEmpty(sequence.PostMacro) then
-    if type(sequence.Postmacro) == "table" then
+    if type(sequence.PostMacro) == "table" then
       if table.getn(sequence.PostMacro) > 0 then
         loopcheck = true
         GSE.PrintDebugMessage("Setting Loop Check True due to PreMacro", "Storage")
@@ -484,7 +484,7 @@ function GSE.FixSequence(sequence)
     GSE.PrintDebugMessage("Empty KeyRelease", GNOME)
   end
   if GSE.isEmpty(sequence.StepFunction) then
-    sequence.StepFunciton = Statics.Sequential
+    sequence.StepFunction = Statics.Sequential
     GSE.PrintDebugMessage("Empty StepFunction", GNOME)
   end
   if not GSE.isEmpty(sequence.Target) then

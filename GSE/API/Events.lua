@@ -53,7 +53,7 @@ function GSE:UNIT_FACTION()
   GSE.ReloadSequences()
 end
 
-function getInstacneInfoLocal()
+function getInstanceInfoLocal()
 	local inInstance, instancetype = IsInInstance()
 	local _, _, difficultyIndex, _, _, playerDifficulty, isDynamic = GetInstanceInfo()
 	
@@ -151,7 +151,7 @@ local inInstance, instancetype = IsInInstance()
     GSE.inDungeon = false
   end
   
-  if (difficulty == 2 or difficult == 24 or difficulty==4) then
+  if (difficulty == 2 or difficulty == 24 or difficulty==4) then
     GSE.inHeroic = true
   else
     GSE.inHeroic = false
@@ -232,7 +232,7 @@ function GSE:ADDON_LOADED(event, addon)
   if GSE.isEmpty(GSEOptions.MacroResetModifiers) then
     GSEOptions.MacroResetModifiers = {}
     GSEOptions.MacroResetModifiers["LeftButton"] = false
-    GSEOptions.MacroResetModifiers["RighttButton"] = false
+    GSEOptions.MacroResetModifiers["RightButton"] = false
     GSEOptions.MacroResetModifiers["MiddleButton"] = false
     GSEOptions.MacroResetModifiers["Button4"] = false
     GSEOptions.MacroResetModifiers["Button5"] = false
