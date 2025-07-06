@@ -64,6 +64,9 @@ recButtonGroup:AddChild(recbutton)
 importframe:AddChild(recButtonGroup)
 GSE.GUIImportFrame = importframe
 
+-- Commented out - references undefined variables legacyradio and defaultradio
+-- TODO: Fix this function by properly defining the radio button widgets
+--[[
 function GSE.GUIToggleImportDefault(switchstate)
   if switchstate == 1 then
       legacyradio:SetValue(true)
@@ -73,6 +76,7 @@ function GSE.GUIToggleImportDefault(switchstate)
       defaultradio:SetValue(true)
   end
 end
+--]]
 
 function GSE.GUIImportSequence()
   local importstring = importsequencebox:GetText()

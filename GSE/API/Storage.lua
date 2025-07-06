@@ -4,8 +4,8 @@ local Statics = GSE.Static
 local L = GSE.L
 
 local GNOME = "Storage"
-MAX_CHARACTER_MACROS=MAX_CHARACTER_MACROS or 18
-MAX_ACCOUNT_MACROS=MAX_ACCOUNT_MACROS or 120
+local MAX_CHARACTER_MACROS = MAX_CHARACTER_MACROS or 18
+local MAX_ACCOUNT_MACROS = MAX_ACCOUNT_MACROS or 120
 
 
 --- Delete a sequence starting with the macro and then the sequence from the library

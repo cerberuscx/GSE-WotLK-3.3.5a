@@ -53,6 +53,9 @@ function GSE:UNIT_FACTION()
   GSE.ReloadSequences()
 end
 
+-- Unused function that references undefined global 'idtext'
+-- Commented out to prevent global variable pollution
+--[[
 function getInstanceInfoLocal()
 	local inInstance, instancetype = IsInInstance()
 	local _, _, difficultyIndex, _, _, playerDifficulty, isDynamic = GetInstanceInfo()
@@ -103,6 +106,7 @@ function getInstanceInfoLocal()
 		idtext:SetText("") 
 	end
 end
+--]]
 function GSE:PARTY_MEMBERS_CHANGED()
 if (InCombatLockdown()~=1) then
 GSE:ZONE_CHANGED_NEW_AREA()

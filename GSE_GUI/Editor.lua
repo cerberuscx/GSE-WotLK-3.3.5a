@@ -735,7 +735,7 @@ function GSE.GUISelectEditorTab(container, event, group)
   if group == "config" then
     GSE:GUIDrawMetadataEditor(container)
   elseif group == "new" then
-	  if(isNewFirstTimeCreated) then
+	  if(GSE.isNewFirstTimeCreated) then
 		GSE.GUIUpdateSequenceDefinition(editframe.ClassID, editframe.SequenceName, editframe.Sequence)
 		editframe.save = true
 	  end
