@@ -1,0 +1,19 @@
+## Interface: 30300
+## Title: GSE GUI
+## Notes: GSE GUI
+## Author: TimothyLuke
+## Version: 2203
+## Dependencies: GSE
+
+
+
+Import.lua
+Export.lua
+DebugWindow.lua
+Transmission.lua
+VersionManagement.lua
+Recorder.lua
+Editor.lua
+Viewer.lua
+GUIFunctions.lua
+CompressSequence.lua

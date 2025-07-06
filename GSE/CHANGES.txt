@@ -1,0 +1,67 @@
+lightweight tag d0423d68e855a7508c78bc84eccd5d8dc2b0311d GSE_2.2.03
+Author:	Timothy Minahan <timothy@minahan.net>
+Date:	Fri Nov 10 17:35:50 2017 +1030
+
+commit d0423d68e855a7508c78bc84eccd5d8dc2b0311d
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:35:50 2017 +1030
+
+    even more travis #363
+
+commit 596c0775a2497c02e15f997e78c179133f429ecf
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:29:35 2017 +1030
+
+    Mopre Travis stuff #363
+
+commit 1814b1e67fd290bcfd1e29f5eeead958c5602516
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:25:55 2017 +1030
+
+    TOC Updates for 2.2.03
+
+commit fee4784e4acab71ba07037115e47acd99cb77624
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:25:06 2017 +1030
+
+    Post Travis update #363
+
+commit f4bed8da1edf04d80bed5ca16736206cc732063f
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:10:44 2017 +1030
+
+    Code and test for #363
+
+commit 85b3ab917b07cb6ba95e2b399f49c0034c8ed3d0
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 17:01:46 2017 +1030
+
+    Change Macro Creation to bypass the OOC queue.  #364
+
+commit 7091e31d2600d54142999b468dbd610ea0488fa8
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 16:31:17 2017 +1030
+
+    #340 add instructions to run check in lua demo
+
+commit f9e27086e996eaaabf4675eea9653d34a67f3c84
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 16:30:53 2017 +1030
+
+    Change /gse to open viewer instead of options #365 /gseo will now be command line options
+
+commit bf900f9e4a27c070e53f79f5b14750ee871d2564
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 16:18:59 2017 +1030
+
+    almost ther efor #340
+    
+    This is now just overlapping main1 into the premacro loop and main6 into
+    the post macro loop.  Very Close
+
+commit 36781b5f279c9eb91bb0a99a535091f60258361d
+Author: Timothy Minahan <timothy@minahan.net>
+Date:   Fri Nov 10 15:49:22 2017 +1030
+
+    inital test loopcheck for #340
+

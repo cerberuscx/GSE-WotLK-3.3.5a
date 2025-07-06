@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: GSE LDB
+## Notes: LibDataBroker Plugin for GSE2
+## Author: TimothyLuke
+## Version: 2203
+## Dependencies: GSE
+
+
+LDBProvider.lua

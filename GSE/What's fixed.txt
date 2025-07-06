@@ -1,0 +1,43 @@
+---------------
+What's working:
+---------------
+you can create,delete,modify,record, export macros.
+you can import macros made by this very addon.
+you can hv multiple versions for different instances, keypress/release, postmacro and premacro all works.
+
+
+-----------
+if it bugs:
+-----------
+/reload
+
+--------------
+How to bug it:
+--------------
+Save macro with the  name "New"
+I am not responsible if you lose all your macros.
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+----------
+Technical:
+----------
+All third party libraries downgraded, now fully compatible with WOTLK:
+	Exception:AceGUI-3.0-Selectable-Panel 
+	Reason: Could not found compatible WOTLK library, but it uses Ace3 for 4.0.0, which is after 3.3.5.a; so far no errors shown!
+
+Wow API functions introduced after wotlk were replaced with custom functions. espcially:
+	GetSpecialization() 
+	GetSpecializationInfo()
+	GetSpecializationInfoByID
+
+Many errors ocur due to retrieving class name/ spec name, if error occurs check if returned class/spec name contains spaces.
+		(Might need to check BM hunter).
+
+
+
+The original code tests for "heroic" and "mythic" as they are different from "raid" and "party", because I never played pve beyond this expansion, I am not sure if an instance can be heroic or mythic but is not a raid or a dungeon, so I don't know what kind of functionality the original code yields. 
+Hence, it recognizes 5 modes only: pvp,raid,dungeon,party,default(openworld), and heroic raid.
+To Do:
+AceTimer (tweaks, and possibly combat fix?)
+

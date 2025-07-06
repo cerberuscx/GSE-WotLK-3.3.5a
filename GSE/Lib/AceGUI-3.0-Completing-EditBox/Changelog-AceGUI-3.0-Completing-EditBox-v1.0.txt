@@ -1,0 +1,35 @@
+------------------------------------------------------------------------
+r5 | farmbuyer | 2010-10-28 17:42:52 +0000 (Thu, 28 Oct 2010) | 1 line
+Changed paths:
+   A /tags/v1.0 (from /trunk:4)
+
+Tagging as v1.0
+------------------------------------------------------------------------
+r4 | farmbuyer | 2010-10-28 17:40:40 +0000 (Thu, 28 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0-Completing-EditBox.toc
+
+Fix silly derpderpderp in library listing.
+------------------------------------------------------------------------
+r3 | farmbuyer | 2010-10-28 01:20:05 +0000 (Thu, 28 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0-Completing-EditBox.lua
+
+Semi-fake checkin to test pkgmeta
+------------------------------------------------------------------------
+r2 | farmbuyer | 2010-10-27 20:52:11 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   A /trunk/.pkgmeta
+   A /trunk/AceGUI-3.0-Completing-EditBox.lua
+   A /trunk/AceGUI-3.0-Completing-EditBox.toc
+
+Initial checking, testing pkgmeta.
+------------------------------------------------------------------------
+r1 | root | 2010-10-27 18:16:06 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   A /branches
+   A /tags
+   A /trunk
+
+"acegui-3-0-completing-editbox/mainline: Initial Import"
+------------------------------------------------------------------------

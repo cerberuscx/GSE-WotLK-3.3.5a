@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: AceGUI-3.0-Selectable-Panel
+## Notes: A Selectable Panel Widget to be used with AceGUI-3.0
+## Author: TimothyLuke
+## Version: @project-version@
+## OptionalDeps: Ace3
+
+AceGUI-3.0-Selectable-Panel.lua
