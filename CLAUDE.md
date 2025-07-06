@@ -41,6 +41,14 @@ The addon has been successfully revived and all critical issues have been fixed:
 - ✅ Performance issues resolved
 - ✅ 5MB+ of duplicate code removed
 
+### New Features Added
+- **Sample Macros** (January 2025)
+  - Added comprehensive sample macro sequences for all classes
+  - 2-3 example sequences per class showing proper GSE macro structure
+  - Includes talent specifications and appropriate step functions
+  - Load with `/gse loadsamples` command
+  - Located in `GSE/SampleMacros_Documented.lua`
+
 ### Recent Fixes Applied
 1. **Critical Bug Fixes** (Commits: 485b966, 305ee9d, 8fa6db3)
    - Fixed 20+ typos in function/variable names
@@ -198,6 +206,7 @@ The addon has been successfully revived and all critical issues have been fixed:
 - `/gse` - Open main interface
 - `/gse debug` - Toggle debug mode
 - `/gse help` - Show help information
+- `/gse loadsamples` - Load sample macros for your class
 
 ## Known Issues
 
@@ -233,6 +242,7 @@ The addon has been successfully revived and all critical issues have been fixed:
 - `66f1049` - Fix global variable pollution issues
 - `593748b` - Fix WoW 3.3.5a API compatibility issues
 - `334d01c` - Clean up codebase and fix performance issues
+- `a5ebb84` - feat: Add documented sample macros for all classes
 
 ## Contributing Guidelines
 
@@ -246,6 +256,7 @@ The addon has been successfully revived and all critical issues have been fixed:
 ### Common Commands
 - `/gse` - Open main interface
 - `/gse debug` - Toggle debug mode
+- `/gse loadsamples` - Load sample macros for your class
 - Build testing: Ensure no Lua errors on load and during use
 
 ### Testing Checklist
