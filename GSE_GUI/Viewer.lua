@@ -38,8 +38,15 @@ viewframe.frame:SetScript("OnSizeChanged", function ()
   local maxHeight = screenHeight - 40  -- Leave some space at top/bottom
   local maxWidth = screenWidth - 40    -- Leave some space at sides
   
-  -- Check if we need to constrain the size
+  -- Get current position
+  local top = viewframe.frame:GetTop()
+  local bottom = viewframe.frame:GetBottom()
+  local left = viewframe.frame:GetLeft()
+  local right = viewframe.frame:GetRight()
+  
+  -- Check if we need to constrain the size or reposition
   local needsResize = false
+  local needsMove = false
   local newHeight = Height
   local newWidth = Width
   
@@ -53,10 +60,36 @@ viewframe.frame:SetScript("OnSizeChanged", function ()
     needsResize = true
   end
   
+  -- Check if window is going off screen edges
+  if top and top > screenHeight then
+    needsMove = true
+  end
+  
+  if bottom and bottom < 0 then
+    needsMove = true
+  end
+  
+  if left and left < 0 then
+    needsMove = true
+  end
+  
+  if right and right > screenWidth then
+    needsMove = true
+  end
+  
   -- Apply constraints if needed
   if needsResize then
     viewframe.frame:SetHeight(newHeight)
     viewframe.frame:SetWidth(newWidth)
+  end
+  
+  -- Reposition if off screen
+  if needsMove then
+    local newPoint = {}
+    newPoint.x = math.min(math.max(left or 20, 20), screenWidth - newWidth - 20)
+    newPoint.y = math.min(math.max(bottom or 20, 20), screenHeight - newHeight - 20)
+    viewframe.frame:ClearAllPoints()
+    viewframe.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", newPoint.x, newPoint.y)
   end
   
   viewframe:DoLayout()
