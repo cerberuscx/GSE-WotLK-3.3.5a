@@ -261,6 +261,8 @@ function GSE:GUIDrawMetadataEditor(container)
   scrollcontainer:SetLayout("Fill") -- important!
 
   local contentcontainer = AceGUI:Create("ScrollFrame")
+  -- Ensure the scroll frame doesn't grow beyond available space
+  contentcontainer:SetAutoAdjustHeight(false)
   scrollcontainer:AddChild(contentcontainer)
 
   local metasimplegroup = AceGUI:Create("SimpleGroup")
@@ -523,6 +525,8 @@ function GSE:GUIDrawMacroEditor(container, version)
   scrollcontainer:SetLayout("Fill") -- important!
 
   local contentcontainer = AceGUI:Create("ScrollFrame")
+  -- Ensure the scroll frame doesn't grow beyond available space
+  contentcontainer:SetAutoAdjustHeight(false)
   scrollcontainer:AddChild(contentcontainer)
 
   local linegroup1 = AceGUI:Create("SimpleGroup")
