@@ -276,8 +276,7 @@ function GSE:GUIDrawMetadataEditor(container)
   scrollcontainer:SetLayout("Fill") -- important!
 
   local contentcontainer = AceGUI:Create("ScrollFrame")
-  -- Ensure the scroll frame doesn't grow beyond available space
-  contentcontainer:SetAutoAdjustHeight(false)
+  -- Don't call SetAutoAdjustHeight(false) here - let the ScrollFrame manage its own height
   scrollcontainer:AddChild(contentcontainer)
 
   local metasimplegroup = AceGUI:Create("SimpleGroup")
@@ -433,7 +432,7 @@ function GSE:GUIDrawMetadataEditor(container)
   pvpdropdown:SetList(GSE.GetVersionList())
   pvpdropdown:SetValue(tostring(editframe.PVP))
   defgroup2:AddChild(pvpdropdown)
-  contentcontainer:AddChild(defgroup2)
+  scrollcontainer:AddChild(defgroup2)
 
   pvpdropdown:SetCallback("OnValueChanged", function (obj,event,key)
     if editframe.Sequence.Default == tonumber(key) then
@@ -524,29 +523,30 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   editframe.Sequence.MacroVersions[version] = GSE.TranslateSequence(editframe.Sequence.MacroVersions[version], "From Editor")
 
-  local layoutcontainer = AceGUI:Create("SimpleGroup")
-  layoutcontainer:SetFullWidth(true)
-  -- Use same height calculation as scrollcontainer to ensure consistency
-  local availableHeight = math.max(100, editframe.Height - 280) -- Ensure minimum height
-  layoutcontainer:SetHeight(availableHeight)
-  layoutcontainer:SetLayout("Flow") -- important!
+  -- Create main container that will hold toolbar and content
+  local maincontainer = AceGUI:Create("SimpleGroup")
+  maincontainer:SetFullWidth(true)
+  maincontainer:SetHeight(editframe.Height - 280)
+  maincontainer:SetLayout("List") -- Use List layout for vertical stacking
 
-  local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
-  --scrollcontainer:SetFullWidth(true)
-  --scrollcontainer:SetFullHeight(true) -- probably?
-  scrollcontainer:SetWidth(editframe.Width - 200)
-  -- Use the same availableHeight as layoutcontainer
-  scrollcontainer:SetHeight(availableHeight)
-  scrollcontainer:SetLayout("Fill") -- important!
+  -- Create toolbar at the top
+  local toolbarcontainer = AceGUI:Create("SimpleGroup")
+  toolbarcontainer:SetFullWidth(true)
+  toolbarcontainer:SetHeight(40) -- Fixed height for toolbar
+  toolbarcontainer:SetLayout("Flow")
 
-  local contentcontainer = AceGUI:Create("ScrollFrame")
-  -- Ensure the scroll frame doesn't grow beyond available space
-  contentcontainer:SetAutoAdjustHeight(false)
-  scrollcontainer:AddChild(contentcontainer)
+  -- Add toolbar content (will be populated later)
+  maincontainer:AddChild(toolbarcontainer)
+
+  -- Create scrollable content area
+  local scrollcontainer = AceGUI:Create("ScrollFrame")
+  scrollcontainer:SetFullWidth(true)
+  scrollcontainer:SetFullHeight(true) -- Fill remaining space
+  maincontainer:AddChild(scrollcontainer)
 
   local linegroup1 = AceGUI:Create("SimpleGroup")
   linegroup1:SetLayout("Flow")
-  linegroup1:SetWidth(editframe.Width - 100)
+  linegroup1:SetFullWidth(true)
   linegroup1:SetAutoAdjustHeight(false)
 
   local stepdropdown = AceGUI:Create("Dropdown")
@@ -597,7 +597,7 @@ function GSE:GUIDrawMacroEditor(container, version)
   end)
   linegroup1:AddChild(delversionbutton)
 
-  contentcontainer:AddChild(linegroup1)
+  scrollcontainer:AddChild(linegroup1)
   local linegroup2 = AceGUI:Create("SimpleGroup")
   linegroup2:SetLayout("Flow")
   linegroup2:SetWidth(editframe.Width - 100)
@@ -635,7 +635,7 @@ function GSE:GUIDrawMacroEditor(container, version)
   end)
   linegroup2:AddChild(PreMacro)
 
-  contentcontainer:AddChild(linegroup2)
+  scrollcontainer:AddChild(linegroup2)
 
   local spellbox = AceGUI:Create("MultiLineEditBox")
   spellbox:SetLabel(L["Sequence"])
@@ -655,7 +655,7 @@ function GSE:GUIDrawMacroEditor(container, version)
       editframe.Sequence.MacroVersions[version][k] = v
     end
   end)
-  contentcontainer:AddChild(spellbox)
+  scrollcontainer:AddChild(spellbox)
 
   local linegroup3 = AceGUI:Create("SimpleGroup")
   linegroup3:SetLayout("Flow")
@@ -693,17 +693,13 @@ function GSE:GUIDrawMacroEditor(container, version)
   PostMacro:SetCallback("OnTextChanged", function (sel, object, value)
     editframe.Sequence.MacroVersions[version].PostMacro = GSE.SplitMeIntolines(value)
   end)
-  contentcontainer:AddChild(linegroup3)
+  scrollcontainer:AddChild(linegroup3)
 
-  layoutcontainer:AddChild(scrollcontainer)
-
-  local toolbarcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
-  toolbarcontainer:SetWidth(85)
-  toolbarcontainer:SetHeight(availableHeight) -- Match the height of other containers
-
-  local heading2 = AceGUI:Create("Label")
-  heading2:SetText(L["Resets"])
-  toolbarcontainer:AddChild(heading2)
+  -- Now populate the toolbar that we created earlier
+  local resetslabel = AceGUI:Create("Label")
+  resetslabel:SetText(L["Resets"] .. ": ")
+  resetslabel:SetWidth(50)
+  toolbarcontainer:AddChild(resetslabel)
 
   -- local targetresetcheckbox = AceGUI:Create("CheckBox")
   -- targetresetcheckbox:SetType("checkbox")
@@ -720,7 +716,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local combatresetcheckbox = AceGUI:Create("CheckBox")
   combatresetcheckbox:SetType("checkbox")
-  combatresetcheckbox:SetWidth(78)
+  combatresetcheckbox:SetWidth(80)
   combatresetcheckbox:SetTriState(true)
   combatresetcheckbox:SetLabel(L["Combat"])
   toolbarcontainer:AddChild(combatresetcheckbox)
@@ -729,17 +725,18 @@ function GSE:GUIDrawMacroEditor(container, version)
     editframe.Sequence.MacroVersions[version].Combat = value
   end)
 
-  local headingspace1 = AceGUI:Create("Label")
-  headingspace1:SetText(" ")
-  toolbarcontainer:AddChild(headingspace1)
+  local spacer1 = AceGUI:Create("Label")
+  spacer1:SetWidth(20)
+  toolbarcontainer:AddChild(spacer1)
 
-  local heading1 = AceGUI:Create("Label")
-  heading1:SetText(L["Use"])
-  toolbarcontainer:AddChild(heading1)
+  local uselabel = AceGUI:Create("Label")
+  uselabel:SetText(L["Use"] .. ": ")
+  uselabel:SetWidth(35)
+  toolbarcontainer:AddChild(uselabel)
 
   local headcheckbox = AceGUI:Create("CheckBox")
   headcheckbox:SetType("checkbox")
-  headcheckbox:SetWidth(78)
+  headcheckbox:SetWidth(60)
   headcheckbox:SetTriState(true)
   headcheckbox:SetLabel(L["Head"])
   headcheckbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -806,7 +803,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local trinket2checkbox = AceGUI:Create("CheckBox")
   trinket2checkbox:SetType("checkbox")
-  trinket2checkbox:SetWidth(83)
+  trinket2checkbox:SetWidth(80)
   trinket2checkbox:SetTriState(true)
   trinket2checkbox:SetLabel(L["Trinket 2"])
   trinket2checkbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -815,8 +812,8 @@ function GSE:GUIDrawMacroEditor(container, version)
   trinket2checkbox:SetValue(editframe.Sequence.MacroVersions[version].Trinket2)
   toolbarcontainer:AddChild(trinket2checkbox)
 
-  layoutcontainer:AddChild(toolbarcontainer)
-  container:AddChild(layoutcontainer)
+  -- Add the main container to the tab
+  container:AddChild(maincontainer)
 end
 
 function GSE.GUISelectEditorTab(container, event, group)
