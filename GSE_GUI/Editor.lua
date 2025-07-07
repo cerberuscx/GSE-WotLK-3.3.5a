@@ -58,11 +58,10 @@ editframe.frame:SetMaxResize(maxWidth, maxHeight)
 -- Set minimum size to prevent content overflow
 editframe.frame:SetMinResize(600, 500)
 
--- Set initial size to a reasonable default
--- Use 60% of screen height which seems to match the manual resize limit
-local defaultHeight = GetScreenHeight() * 0.6
+-- Set initial size to maximum constrained height
+-- Use 100% - the actual constraint will limit it appropriately
 editframe:SetCallback("OnShow", function()
-  editframe.frame:SetHeight(defaultHeight)
+  editframe.frame:SetHeight(GetScreenHeight())
 end)
 editframe.frame:SetScript("OnSizeChanged", function ()
   editframe.Left, editframe.Bottom, editframe.Width, editframe.Height = editframe.frame:GetBoundsRect()
