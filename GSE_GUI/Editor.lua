@@ -58,11 +58,11 @@ editframe.frame:SetMaxResize(maxWidth, maxHeight)
 -- Set minimum size to prevent content overflow
 editframe.frame:SetMinResize(600, 500)
 
--- Always set to maximum allowed height when showing
-editframe:SetCallback("OnShow", function()
-  local maxHeight = GetScreenHeight() - 40
-  editframe.frame:SetHeight(maxHeight)
-end)
+-- Set initial size to a reasonable default (80% of max height, fixed width)
+if not editframe.HasBeenShown then
+  editframe.frame:SetSize(700, maxHeight * 0.8)
+  editframe.HasBeenShown = true
+end
 editframe.frame:SetScript("OnSizeChanged", function ()
   editframe.Left, editframe.Bottom, editframe.Width, editframe.Height = editframe.frame:GetBoundsRect()
   local screenHeight = GetScreenHeight()
