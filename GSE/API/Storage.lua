@@ -105,8 +105,12 @@ function GSE.OOCAddSequenceToCollection(sequenceName, sequence, classid)
   local confirmationtext = ""
 
   -- Remove Spaces or commas from SequenceNames and replace with _'s
-  sequenceName = string.gsub(sequenceName, " ", "_")
-  sequenceName = string.gsub(sequenceName, ",", "_")
+  if not GSE.isEmpty(sequenceName) then
+    sequenceName = string.gsub(sequenceName, " ", "_")
+    sequenceName = string.gsub(sequenceName, ",", "_")
+  else
+    return false, L["No Sequence Name"]
+  end
 
   -- CHeck for colissions
   local found = false
@@ -129,8 +133,9 @@ function GSE.OOCAddSequenceToCollection(sequenceName, sequence, classid)
 		  GSE.PrintDebugMessage(L["No changes were made to "].. sequenceName, "Storage")
 		
 		-- check if source the same.  If so ignore
-		for k,v in ipairs(sequence.MacroVersions) do
-		  for i, j in ipairs(GSELibrary[classid][sequenceName].MacroVersions) do
+		if sequence.MacroVersions and GSELibrary[classid] and GSELibrary[classid][sequenceName] and GSELibrary[classid][sequenceName].MacroVersions then
+		  for k,v in ipairs(sequence.MacroVersions) do
+		    for i, j in ipairs(GSELibrary[classid][sequenceName].MacroVersions) do
 			if GSE.CompareSequence(v,j) then
 			  GSE.PrintDebugMessage("Macro Version already exists", "Storage")
 			else
@@ -140,6 +145,7 @@ function GSE.OOCAddSequenceToCollection(sequenceName, sequence, classid)
 
 			  GSE.PrintDebugMessage("Finished colliding entry entry", "Storage")
 			end
+		    end
 		  end
 		end
 	end--- Added by me
