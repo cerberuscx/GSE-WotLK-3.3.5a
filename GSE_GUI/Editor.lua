@@ -120,14 +120,11 @@ editframe.frame:SetScript("OnSizeChanged", function ()
     editframe.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", newPoint.x, newPoint.y)
   end
   
-  -- Force tab redraw if we're on a numbered tab to update container heights
-  if editframe.ContentContainer and editframe.SelectedTab and editframe.SelectedTab ~= "config" and editframe.SelectedTab ~= "new" then
-    -- Redraw the current tab with new dimensions
-    GSE.GUISelectEditorTab(editframe.ContentContainer, nil, editframe.SelectedTab)
-  else
-    -- Just update layout without rebuilding content
-    editframe:DoLayout()
+  -- Update TabGroup height and layout
+  if editframe.updateTabGroupHeight then
+    editframe.updateTabGroupHeight()
   end
+  editframe:DoLayout()
 end)
 
 
@@ -198,7 +195,14 @@ function GSE.GUIEditorPerformLayout(frame)
     GSE.GUISelectEditorTab(container, event, group)
   end)
   tabgrp:SetFullWidth(true)
-  tabgrp:SetFullHeight(true)
+  -- Don't use SetFullHeight(true) as it causes unbounded growth
+  -- Instead, calculate available height after accounting for header and buttons
+  local function updateTabGroupHeight()
+    local availableHeight = editframe.Height - 150 -- Account for header, buttons, and padding
+    tabgrp:SetHeight(math.max(300, availableHeight)) -- Minimum height of 300
+  end
+  updateTabGroupHeight()
+  editframe.updateTabGroupHeight = updateTabGroupHeight
 
   tabgrp:SelectTab("config")
   frame:AddChild(tabgrp)
