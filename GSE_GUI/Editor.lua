@@ -534,7 +534,7 @@ function GSE:GUIDrawMacroEditor(container, version)
   local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
   --scrollcontainer:SetFullWidth(true)
   --scrollcontainer:SetFullHeight(true) -- probably?
-  scrollcontainer:SetWidth(editframe.Width - 135) -- Leave space for 100px sidebar + 35px gap
+  scrollcontainer:SetWidth(editframe.Width - 200)
   -- Use the same availableHeight as layoutcontainer
   scrollcontainer:SetHeight(availableHeight)
   scrollcontainer:SetLayout("Fill") -- important!
@@ -698,7 +698,7 @@ function GSE:GUIDrawMacroEditor(container, version)
   layoutcontainer:AddChild(scrollcontainer)
 
   local toolbarcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
-  toolbarcontainer:SetWidth(100) -- Slightly wider for better checkbox spacing
+  toolbarcontainer:SetWidth(85)
   toolbarcontainer:SetHeight(availableHeight) -- Match the height of other containers
 
   local heading2 = AceGUI:Create("Label")
@@ -720,7 +720,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local combatresetcheckbox = AceGUI:Create("CheckBox")
   combatresetcheckbox:SetType("checkbox")
-  combatresetcheckbox:SetWidth(95)
+  combatresetcheckbox:SetWidth(78)
   combatresetcheckbox:SetTriState(true)
   combatresetcheckbox:SetLabel(L["Combat"])
   toolbarcontainer:AddChild(combatresetcheckbox)
@@ -739,7 +739,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local headcheckbox = AceGUI:Create("CheckBox")
   headcheckbox:SetType("checkbox")
-  headcheckbox:SetWidth(95)
+  headcheckbox:SetWidth(78)
   headcheckbox:SetTriState(true)
   headcheckbox:SetLabel(L["Head"])
   headcheckbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -751,7 +751,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local neckcheckbox = AceGUI:Create("CheckBox")
   neckcheckbox:SetType("checkbox")
-  neckcheckbox:SetWidth(95)
+  neckcheckbox:SetWidth(78)
   neckcheckbox:SetTriState(true)
   neckcheckbox:SetLabel(L["Neck"])
   neckcheckbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -762,7 +762,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local beltcheckbox = AceGUI:Create("CheckBox")
   beltcheckbox:SetType("checkbox")
-  beltcheckbox:SetWidth(95)
+  beltcheckbox:SetWidth(78)
   beltcheckbox:SetTriState(true)
   beltcheckbox:SetLabel(L["Belt"])
   beltcheckbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -773,7 +773,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local ring1checkbox = AceGUI:Create("CheckBox")
   ring1checkbox:SetType("checkbox")
-  ring1checkbox:SetWidth(95)
+  ring1checkbox:SetWidth(68)
   ring1checkbox:SetTriState(true)
   ring1checkbox:SetLabel(L["Ring 1"])
   ring1checkbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -784,7 +784,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local ring2checkbox = AceGUI:Create("CheckBox")
   ring2checkbox:SetType("checkbox")
-  ring2checkbox:SetWidth(95)
+  ring2checkbox:SetWidth(68)
   ring2checkbox:SetTriState(true)
   ring2checkbox:SetLabel(L["Ring 2"])
   ring2checkbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -795,7 +795,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local trinket1checkbox = AceGUI:Create("CheckBox")
   trinket1checkbox:SetType("checkbox")
-  trinket1checkbox:SetWidth(95)
+  trinket1checkbox:SetWidth(78)
   trinket1checkbox:SetTriState(true)
   trinket1checkbox:SetLabel(L["Trinket 1"])
   trinket1checkbox:SetCallback("OnValueChanged", function (sel, object, value)
@@ -806,7 +806,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local trinket2checkbox = AceGUI:Create("CheckBox")
   trinket2checkbox:SetType("checkbox")
-  trinket2checkbox:SetWidth(95)
+  trinket2checkbox:SetWidth(83)
   trinket2checkbox:SetTriState(true)
   trinket2checkbox:SetLabel(L["Trinket 2"])
   trinket2checkbox:SetCallback("OnValueChanged", function (sel, object, value)
