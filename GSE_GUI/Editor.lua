@@ -509,15 +509,16 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local layoutcontainer = AceGUI:Create("SimpleGroup")
   layoutcontainer:SetFullWidth(true)
-  layoutcontainer:SetHeight(editframe.Height - 280) -- Set explicit height to prevent overflow during resize
+  -- Use same height calculation as scrollcontainer to ensure consistency
+  local availableHeight = math.max(100, editframe.Height - 280) -- Ensure minimum height
+  layoutcontainer:SetHeight(availableHeight)
   layoutcontainer:SetLayout("Flow") -- important!
 
   local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
   --scrollcontainer:SetFullWidth(true)
   --scrollcontainer:SetFullHeight(true) -- probably?
   scrollcontainer:SetWidth(editframe.Width - 200)
-  -- Better height calculation that accounts for minimum space needed
-  local availableHeight = math.max(100, editframe.Height - 280) -- Ensure minimum height
+  -- Use the same availableHeight as layoutcontainer
   scrollcontainer:SetHeight(availableHeight)
   scrollcontainer:SetLayout("Fill") -- important!
 
@@ -676,6 +677,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local toolbarcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
   toolbarcontainer:SetWidth(85)
+  toolbarcontainer:SetHeight(availableHeight) -- Match the height of other containers
 
   local heading2 = AceGUI:Create("Label")
   heading2:SetText(L["Resets"])
