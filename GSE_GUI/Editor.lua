@@ -120,7 +120,7 @@ editframe.frame:SetScript("OnSizeChanged", function ()
     editframe.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", newPoint.x, newPoint.y)
   end
   
-  GSE.GUISelectEditorTab(editframe.ContentContainer, "Resize", editframe.SelectedTab)
+  -- Just update layout without rebuilding content
   editframe:DoLayout()
 end)
 
