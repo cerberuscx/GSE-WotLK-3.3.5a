@@ -125,35 +125,6 @@ editframe.frame:SetScript("OnSizeChanged", function ()
     editframe.updateTabGroupHeight()
   end
   editframe:DoLayout()
-  
-  -- Force the TabGroup and its content to update layout
-  if editframe.ContentContainer then
-    editframe.ContentContainer:DoLayout()
-    -- Fire a manual resize on the content to force refresh
-    local content = editframe.ContentContainer.content
-    if content and content.DoLayout then
-      content:DoLayout()
-    end
-    
-    -- Update numbered tab container dimensions if they exist
-    if editframe.numberedTabContainers and editframe.SelectedTab ~= "config" and editframe.SelectedTab ~= "new" then
-      local availableHeight = math.max(100, editframe.Height - 280)
-      if editframe.numberedTabContainers.layout then
-        editframe.numberedTabContainers.layout:SetHeight(availableHeight)
-      end
-      if editframe.numberedTabContainers.scroll then
-        editframe.numberedTabContainers.scroll:SetHeight(availableHeight)
-        editframe.numberedTabContainers.scroll:SetWidth(editframe.Width - 200)
-      end
-      if editframe.numberedTabContainers.toolbar then
-        editframe.numberedTabContainers.toolbar:SetHeight(availableHeight)
-      end
-      -- Force a layout update on the containers
-      if editframe.numberedTabContainers.layout.DoLayout then
-        editframe.numberedTabContainers.layout:DoLayout()
-      end
-    end
-  end
 end)
 
 
@@ -841,20 +812,11 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   layoutcontainer:AddChild(toolbarcontainer)
   container:AddChild(layoutcontainer)
-  
-  -- Store references for resize updates
-  editframe.numberedTabContainers = {
-    layout = layoutcontainer,
-    scroll = scrollcontainer,
-    toolbar = toolbarcontainer
-  }
 end
 
 function GSE.GUISelectEditorTab(container, event, group)
   container:ReleaseChildren()
   editframe.SelectedTab = group
-  -- Clear container references when switching tabs
-  editframe.numberedTabContainers = nil
   editframe.nameeditbox:SetText(GSE.GUIEditFrame.SequenceName)
   editframe.iconpicker:SetImage(GSE.GetMacroIcon(editframe.ClassID, editframe.SequenceName))
   if group == "config" then
