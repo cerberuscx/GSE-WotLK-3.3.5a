@@ -120,8 +120,14 @@ editframe.frame:SetScript("OnSizeChanged", function ()
     editframe.frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", newPoint.x, newPoint.y)
   end
   
-  -- Just update layout without rebuilding content
-  editframe:DoLayout()
+  -- Force tab redraw if we're on a numbered tab to update container heights
+  if editframe.ContentContainer and editframe.SelectedTab and editframe.SelectedTab ~= "config" and editframe.SelectedTab ~= "new" then
+    -- Redraw the current tab with new dimensions
+    GSE.GUISelectEditorTab(editframe.ContentContainer, nil, editframe.SelectedTab)
+  else
+    -- Just update layout without rebuilding content
+    editframe:DoLayout()
+  end
 end)
 
 
