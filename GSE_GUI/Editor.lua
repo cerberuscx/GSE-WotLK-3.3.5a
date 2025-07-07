@@ -125,6 +125,11 @@ editframe.frame:SetScript("OnSizeChanged", function ()
     editframe.updateTabGroupHeight()
   end
   editframe:DoLayout()
+  
+  -- Trigger a layout refresh on the TabGroup's content
+  if editframe.ContentContainer and editframe.ContentContainer.LayoutFinished then
+    editframe.ContentContainer:Fire("OnHeightSet")
+  end
 end)
 
 
