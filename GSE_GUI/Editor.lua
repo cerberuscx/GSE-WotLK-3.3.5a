@@ -509,7 +509,7 @@ function GSE:GUIDrawMacroEditor(container, version)
 
   local layoutcontainer = AceGUI:Create("SimpleGroup")
   layoutcontainer:SetFullWidth(true)
-  layoutcontainer:SetHeight(math.max(100, editframe.Height - 280))
+  -- Don't set explicit height - let it size based on contents
   layoutcontainer:SetLayout("Flow") -- important!
 
   local scrollcontainer = AceGUI:Create("SimpleGroup") -- "InlineGroup" is also good
