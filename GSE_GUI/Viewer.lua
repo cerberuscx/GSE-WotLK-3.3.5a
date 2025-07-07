@@ -106,14 +106,12 @@ function viewframe:clearpanels(widget, selected)
         viewframe.ClassID = elements[1]
         viewframe.SequenceName = elements[2]
         viewframe.EditButton:SetDisabled(false)
-        viewframe.DuplicateButton:SetDisabled(false)
         viewframe.ExportButton:SetDisabled(false)
         editkey = k
       else
         viewframe.ClassID = 0
         viewframe.SequenceName = ""
         viewframe.EditButton:SetDisabled(true)
-        viewframe.DuplicateButton:SetDisabled(true)
         viewframe.ExportButton:SetDisabled(true)
         editkey = ""
       end
@@ -279,40 +277,6 @@ function GSE.GUIViewerToolbar(container)
   updbutton:SetDisabled(true)
   buttonGroup:AddChild(updbutton)
   viewframe.EditButton = updbutton
-
-  local dupbutton = AceGUI:Create("Button")
-  dupbutton:SetText(L["Duplicate"])
-  dupbutton:SetWidth(150)
-  dupbutton:SetCallback("OnClick", function()
-    local classid = viewframe.ClassID
-    local sequencename = viewframe.SequenceName
-    if not GSE.isEmpty(classid) and not GSE.isEmpty(sequencename) then
-      -- Clone the sequence
-      local originalSequence = GSELibrary[classid][sequencename]
-      local clonedSequence = GSE.CloneSequence(originalSequence, true)
-      
-      -- Generate a unique name
-      local newName = sequencename .. "_Copy"
-      local counter = 1
-      while GSELibrary[classid][newName] do
-        newName = sequencename .. "_Copy" .. counter
-        counter = counter + 1
-      end
-      
-      -- Save the cloned sequence
-      GSE.AddSequenceToCollection(newName, clonedSequence, classid)
-      
-      -- Refresh the viewer
-      GSE.UpdateSequenceList()
-      GSE.GUIShowViewer()
-      
-      -- Show success message
-      GSE.Print(string.format(L["Sequence %s duplicated as %s"], sequencename, newName), GNOME)
-    end
-  end)
-  dupbutton:SetDisabled(true)
-  buttonGroup:AddChild(dupbutton)
-  viewframe.DuplicateButton = dupbutton
 
   local impbutton = AceGUI:Create("Button")
   impbutton:SetText(L["Import"])
