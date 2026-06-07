@@ -29,6 +29,7 @@ viewframe.ClassID = 0
 local maxHeight = GetScreenHeight() - 40
 local maxWidth = GetScreenWidth() - 40
 viewframe.frame:SetMaxResize(maxWidth, maxHeight)
+viewframe.frame:SetMinResize(700, 450)
 
 -- Add resize constraints to prevent window from going off screen
 viewframe.frame:SetScript("OnSizeChanged", function ()
@@ -144,7 +145,7 @@ function GSE.GUICreateSequencePanels(frame, container, key)
   selpanel:SetHeight(300)
   viewframe.panels[key] = selpanel
   selpanel:SetCallback("OnClick", function(widget, _, selected, button)
-    viewframe:clearpanels(widget, selected)
+    viewframe:clearpanels(widget, true)
     if button == "RightButton" then
       GSE.GUILoadEditor(widget:GetKey(), viewframe)
     end
@@ -173,8 +174,9 @@ function GSE.GUICreateSequencePanels(frame, container, key)
   local helptext = L["No Help Information Available"]
  
 
-  if not GSE.isEmpty(GSELibrary[classid][sequencename].Help) then
-     helptext = GSELibrary[classid][sequencename].Help
+  local seq = GSELibrary[classid] and GSELibrary[classid][sequencename]
+  if seq and not GSE.isEmpty(seq.Help) then
+     helptext = seq.Help
   end
   
   helplabel:SetFullWidth(true)
@@ -194,8 +196,8 @@ function GSE.GUICreateSequencePanels(frame, container, key)
   row2:AddChild(talentsHead)
 
   local talentslabel = AceGUI:Create("Label")
-  if not GSE.isEmpty(GSELibrary[classid][sequencename].Talents) then
-    talentslabel:SetText(GSELibrary[classid][sequencename].Talents)
+  if seq and not GSE.isEmpty(seq.Talents) then
+    talentslabel:SetText(seq.Talents)
   end
   talentslabel:SetWidth(80)
   talentslabel:SetFontObject(font)
@@ -215,8 +217,8 @@ function GSE.GUICreateSequencePanels(frame, container, key)
 
   local urlval = "https://wowlazymacros.com"
   local urllabel = AceGUI:Create("InteractiveLabel")
-  if not GSE.isEmpty(GSELibrary[classid][sequencename].Helplink) then
-   urlval = GSELibrary[classid][sequencename].Helplink
+  if seq and not GSE.isEmpty(seq.Helplink) then
+   urlval = seq.Helplink
   end
   urllabel:SetFontObject(font)
   urllabel:SetText(urlval)
@@ -230,7 +232,7 @@ function GSE.GUICreateSequencePanels(frame, container, key)
 
 
   local column2 = AceGUI:Create("SimpleGroup")
-  column2:SetWidth(60)
+  column2:SetWidth(65)
   column2:SetLayout("List")
   columngroup:AddChild(column2)
 
@@ -244,6 +246,7 @@ function GSE.GUICreateSequencePanels(frame, container, key)
   selpanel.Icon = viewiconpicker
   viewiconpicker:SetImage(GSE.GetMacroIcon(classid, sequencename))
   viewiconpicker:SetImageSize(50,50)
+  viewiconpicker:SetWidth(60)
   column2:AddChild(viewiconpicker)
 
   selpanel:AddChild(columngroup)
@@ -263,7 +266,7 @@ function GSE.GUIViewerToolbar(container)
   local newbutton = AceGUI:Create("Button")
   newbutton:SetText(L["New"])
   newbutton:SetWidth(150)
-  newbutton:SetCallback("OnClick", function() GSE.isNewFirstTimeCreated=true,GSE.GUILoadEditor(nil, viewframe) end)
+  newbutton:SetCallback("OnClick", function() GSE.isNewFirstTimeCreated=true; GSE.GUILoadEditor(nil, viewframe) end)
   buttonGroup:AddChild(newbutton)
 
   local updbutton = AceGUI:Create("Button")

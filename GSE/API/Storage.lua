@@ -873,8 +873,7 @@ function GSE.GetDefaultIcon()
   local currentSpec, currentSpecID,defaulticon = GSE.GetCurrentSpecID()
  -- local currentSpecID = currentSpec and select(1, GetSpecializationInfo(currentSpec)) or ""
   
-  --local _, _, _, defaulticon, _, _, _ = GetSpecializationInfoByID(currentSpecID)
-  return strsub(defaulticon, 17)
+  return defaulticon and string.sub(defaulticon, 17) or "INV_MISC_QUESTIONMARK"
 end
 
 
@@ -942,10 +941,7 @@ function GSE.GetMacroIcon(classid, sequenceIndex)
     if sequence.SpecID == 0 then
       return "INV_MISC_QUESTIONMARK"
     else
-     -- local _, _, _, specicon, _, _, _ = GetSpecializationInfoByID((GSE.isEmpty(sequence.SpecID) and GSE.GetCurrentSpecID() or sequence.SpecID))
-	 local specicon
-      GSE.PrintDebugMessage("No Sequence Icon setting to " .. strsub(specicon, 17), GNOME)
-      return strsub(specicon, 17)
+      return GSEOptions.DefaultDisabledMacroIcon or "INV_MISC_QUESTIONMARK"
     end
   elseif GSE.isEmpty(iconid) and not GSE.isEmpty(sequence.Icon) then
 
@@ -1162,12 +1158,15 @@ function GSE.MoveMacroToClassFromGlobal()
   for k,v in pairs(GSELibrary[0]) do
     if not GSE.isEmpty(v.SpecID) and tonumber(v.SpecID) > 0 then
       if v.SpecID < 12 then
+        if not GSELibrary[v.SpecID] then GSELibrary[v.SpecID] = {} end
         GSELibrary[v.SpecID][k] = v
         GSE.Print(string.format(L["Moved %s to class %s."], k, Statics.wotlkSpecIDList[v.SpecID]))
         GSELibrary[0][k] = nil
       else
-        GSELibrary[GSE.GetClassIDforSpec(v.SpecID)][k] = v
-        GSE.Print(string.format(L["Moved %s to class %s."], k, Statics.wotlkSpecIDList[GSE.GetClassIDforSpec(v.SpecID)]))
+        local classID = GSE.GetClassIDforSpec(v.SpecID)
+        if not GSELibrary[classID] then GSELibrary[classID] = {} end
+        GSELibrary[classID][k] = v
+        GSE.Print(string.format(L["Moved %s to class %s."], k, Statics.wotlkSpecIDList[classID]))
         GSELibrary[0][k] = nil
       end
     end
@@ -1224,7 +1223,7 @@ end
 
 --- This function scans all macros in the library and reports on corrupt macros.
 function GSE.ScanMacrosForErrors()
-  for classlibid,classlib in ipairs(GSELibrary) do
+  for classlibid,classlib in pairs(GSELibrary) do
     for seqname, seq in pairs(classlib) do
       for macroversionid, macroversion in ipairs(seq) do
         local status, error = pcall(GSE.CheckSequence, macroversion)
@@ -1246,7 +1245,7 @@ end
 
 --- This function takes a text string and compresses it without loading it to the library
 function GSE.CompressSequenceFromString(importstring)
-  importStr = GSE.StripControlandExtendedCodes(importstring)
+  local importStr = GSE.StripControlandExtendedCodes(importstring)
   local returnstr = ""
   local functiondefinition =  GSE.FixQuotes(importStr) .. [===[
   return Sequences

@@ -21,18 +21,16 @@ frame:SetBackdrop({
 frame:SetBackdropColor(0, 0, 0, .5)
 
 local scrollFrame = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
-scrollFrame:SetSize(500, 300)
+scrollFrame:SetSize(480, 300)
 scrollFrame:SetPoint("CENTER")
 
 
 local AdvancedTextEditor = CreateFrame("EditBox", nil, scrollFrame)
 
 AdvancedTextEditor:SetMultiLine(true)
---AdvancedTextEditor:SetText("local sequence = " .. GSE.Dump(GSE.Library[2]["SAM_PROTGOD"]))
---AdvancedTextEditor:SetText()
 
 AdvancedTextEditor:SetFontObject(ChatFontNormal)
-AdvancedTextEditor:SetWidth(500)
+AdvancedTextEditor:SetWidth(480)
 AdvancedTextEditor:SetScript("OnEscapePressed", function() frame:Hide() end)
 
 frame.TextBox = AdvancedTextEditor

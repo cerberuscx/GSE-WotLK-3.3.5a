@@ -173,8 +173,8 @@ for k,v in pairs(Statics.wotlkSpecIDList) do
 	if (k==specID) then 
 		local value=Statics.wotlkSpecIDList[specID]
 		if value then
-			local last = string.split( value, "% " )
-	    local class=string.upper(last[#last])
+			local parts = GSE.split(value, " - ")
+	    local class = string.upper(parts[#parts])
 		local currentenglishclass, currentclassDisplayName = UnitClass("player")
 		
 		currentenglishclass=string.upper(currentenglishclass)

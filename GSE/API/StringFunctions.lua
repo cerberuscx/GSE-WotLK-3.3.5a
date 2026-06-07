@@ -231,6 +231,5 @@ function GSE.StripControlandExtendedCodes( str )
 end
 
 function GSE.TrimWhiteSpace(str)
-  local str1=string.gsub(str, '%s', '');
-  return (string.gsub(str1, "^%s*(.-)%s*$", "%1"))
+  return (string.gsub(str, "^%s*(.-)%s*$", "%1"))
 end

@@ -27,8 +27,8 @@ end
 --- Format the text against the GSE Sequence Spec.
 function GSE.GUIParseText(editbox)
   if GSEOptions.RealtimeParse then
-    text = GSE.UnEscapeString(editbox:GetText())
-    returntext = GSE.TranslateString(text , GetLocale(), GetLocale(), true)
+    local text = GSE.UnEscapeString(editbox:GetText())
+    local returntext = GSE.TranslateString(text , GetLocale(), GetLocale(), true)
     editbox:SetText(returntext)
     editbox:SetCursorPosition(string.len(returntext)+2)
   end
@@ -42,7 +42,7 @@ function GSE.GUILoadEditor(key, incomingframe, recordedstring)
   if GSE.isEmpty(key) then
     classid = GSE.GetCurrentClassID()
     sequenceName = GSE.getSequenceName()
-	isNewFirstTimeCreated=true
+	GSE.isNewFirstTimeCreated=true
     sequence = {
       ["Author"] = GSE.GetCharacterName(),
       ["Talents"] = GSE.GetCurrentTalents(),
@@ -64,12 +64,12 @@ function GSE.GUILoadEditor(key, incomingframe, recordedstring)
       sequence.MacroVersions[1] = GSE.SplitMeIntolines(recordedstring)
     end
   else
-    elements = GSE.split(key, ",")
+    local elements = GSE.split(key, ",")
     classid = tonumber(elements[1])
     sequenceName = elements[2]
 	
     sequence = GSE.CloneSequence(GSELibrary[classid][sequenceName], true)
-	isNewFirstTimeCreated=false
+	GSE.isNewFirstTimeCreated=false
   end
   GSE.GUIEditFrame.SequenceName = sequenceName
   GSE.GUIEditFrame.Sequence = sequence
@@ -146,6 +146,9 @@ function GSE.GUIUpdateSequenceList()
 end
 
 function GSE.GUIToggleClasses(buttonname)
+  if not classradio or not specradio then
+    return
+  end
   if buttonname == "class" then
     classradio:SetValue(true)
     specradio:SetValue(false)

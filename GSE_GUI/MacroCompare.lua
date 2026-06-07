@@ -35,7 +35,7 @@ headerGroup:SetFullWidth(true)
 headerGroup:SetLayout("Flow")
 
 
-leftColumn = AceGUI:Create("MultiLineEditBox")
+local leftColumn = AceGUI:Create("MultiLineEditBox")
 compareframe.OrigText = leftColumn
 leftColumn:SetRelativeWidth(0.5)
 leftColumn:SetFullHeight(true)
@@ -43,7 +43,7 @@ leftColumn:SetNumLines(25)
 leftColumn:DisableButton(true)
 leftColumn:SetLabel(L["Local Macro"])
 
-rightColumn = AceGUI:Create("MultiLineEditBox")
+local rightColumn = AceGUI:Create("MultiLineEditBox")
 compareframe.NewText = rightColumn
 rightColumn:SetRelativeWidth(0.5)
 rightColumn:SetFullHeight(true)
@@ -125,7 +125,7 @@ compareframe:AddChild (actionButtonGroup)
 
 function GSE.GUIShowCompareWindow(sequenceName, classid, newsequence)
   GSE.GUICompareFrame.NewSequence = newsequence
-  GSE.GUICompareFrame.OrigText:SetText(GSE.ExportSequence(GSE.Library[classid][sequenceName], sequenceName, true, "STRING", true))
+  GSE.GUICompareFrame.OrigText:SetText(GSE.ExportSequence(GSELibrary[classid][sequenceName], sequenceName, true, "STRING", true))
   GSE.GUICompareFrame.NewText:SetText(GSE.ExportSequence(newsequence, sequenceName, true, "STRING", true))
   GSE.GUICompareFrame:Show()
   GSE.GUICompareFrame.classid = classid

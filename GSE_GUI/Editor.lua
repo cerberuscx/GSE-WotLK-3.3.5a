@@ -180,7 +180,7 @@ function GSE.GUIEditorPerformLayout(frame)
   headerGroup:AddChild(nameeditbox)
 
   local spacerlabel = AceGUI:Create("Label")
-  spacerlabel:SetWidth(300)
+  spacerlabel:SetWidth(20)
   headerGroup:AddChild(spacerlabel)
 
   local iconpicker = AceGUI:Create("Icon")
@@ -232,7 +232,7 @@ function GSE.GUIEditorPerformLayout(frame)
   transbutton:SetCallback("OnClick", function() GSE.GUIShowTransmissionGui(editframe.ClassID.. "," ..editframe.SequenceName) end)
 
   local editButtonGroup = AceGUI:Create("SimpleGroup")
-  editButtonGroup:SetWidth(602)
+  editButtonGroup:SetFullWidth(true)
   editButtonGroup:SetLayout("Flow")
   editButtonGroup:SetHeight(15)
 

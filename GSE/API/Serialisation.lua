@@ -131,7 +131,7 @@ function GSE.TransmitSequence(key, channel, target)
   t.ClassID = classid
   t.SequenceName = SequenceName
   t.Sequence = GSELibrary[classid][SequenceName]
-  GSSendMessage(t, channel, target)
+  GSE.sendMessage(t, channel, target)
   GSE.GUITransmissionFrame:SetStatusText(SequenceName .. L[" sent"])
 end
 
@@ -146,10 +146,11 @@ function GSE.sendMessage(tab, channel, target)
   local transmission = GSE.EncodeMessage(tab)
   GSE.PrintDebugMessage("Transmission: \n" .. transmission, Statics.SourceTransmission)
   if GSE.isEmpty(channel) then
+    local inInstance = IsInInstance()
     if IsInRaid() then
-      channel = (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID"
+      channel = inInstance and "INSTANCE_CHAT" or "RAID"
     else
-      channel = (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"
+      channel = inInstance and "INSTANCE_CHAT" or "PARTY"
     end
   end
   GSE:SendCommMessage(Statics.CommPrefix, transmission, channel, target)
@@ -158,9 +159,9 @@ end
 
 function GSE.performVersionCheck(version)
   if(tonumber(version) ~= nil and tonumber(version) > tonumber(GSE.VersionString)) then
-    if not GSold then
+    if not GSE.GSold then
       GSE.Print(L["GSE is out of date. You can download the newest version from https://mods.curse.com/addons/wow/gnomesequencer-enhanced."], Statics.SourceTransmission)
-      GSold = true
+      GSE.GSold = true
       if((tonumber(version) - tonumber(GSE.VersionString)) >= 5) then
         StaticPopup_Show('GSE_UPDATE_AVAILABLE')
       end

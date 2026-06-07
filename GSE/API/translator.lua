@@ -71,34 +71,34 @@ function GSE.TranslateSequenceFromTo(sequence, fromLocale, toLocale, sequenceNam
       sequence.KeyRelease[k] = GSE.TranslateString(v, fromLocale, toLocale)
     end
   else
-    GSE.PrintDebugMessage("empty Keyrelease in translate", Statics.Translate)
+    GSE.PrintDebugMessage("empty Keyrelease in translate", GNOME)
   end
   if not GSE.isEmpty(sequence.KeyPress) then
-    GSE.PrintDebugMessage("Keypress has stuff in translate", Statics.Translate)
+    GSE.PrintDebugMessage("Keypress has stuff in translate", GNOME)
     for k,v in pairs(sequence.KeyPress) do
       -- Translate KeyRelease
       sequence.KeyPress[k] = GSE.TranslateString(v, fromLocale, toLocale)
     end
   else
-    GSE.PrintDebugMessage("empty Keypress in translate", Statics.Translate)
+    GSE.PrintDebugMessage("empty Keypress in translate", GNOME)
   end
   if not GSE.isEmpty(sequence.PreMacro) then
-      GSE.PrintDebugMessage("Keypress has stuff in translate", Statics.Translate)
+      GSE.PrintDebugMessage("Keypress has stuff in translate", GNOME)
     for k,v in pairs(sequence.PreMacro) do
       -- Translate KeyRelease
       sequence.PreMacro[k] = GSE.TranslateString(v, fromLocale, toLocale)
     end
   else
-    GSE.PrintDebugMessage("empty Keypress in translate", Statics.Translate)
+    GSE.PrintDebugMessage("empty Keypress in translate", GNOME)
   end
   if not GSE.isEmpty(sequence.PostMacro) then
-    GSE.PrintDebugMessage("Keypress has stuff in translate", Statics.Translate)
+    GSE.PrintDebugMessage("Keypress has stuff in translate", GNOME)
     for k,v in pairs(sequence.PostMacro) do
       -- Translate KeyRelease
       sequence.PostMacro[k] = GSE.TranslateString(v, fromLocale, toLocale)
     end
   else
-    GSE.PrintDebugMessage("empty Keypress in translate", Statics.Translate)
+    GSE.PrintDebugMessage("empty Keypress in translate", GNOME)
   end
 
   -- check for blanks
@@ -323,7 +323,7 @@ end
 -- This information is used by the GSEUtils that generates the enUS.lua, enUSHash.lua and enUSSHADOW.lua files.
 function GSE.ReportUnfoundSpells()
   GSEOptions.UnfoundSpells = {}
-  for classid, macroset in ipairs(GSELibrary) do
+  for classid, macroset in pairs(GSELibrary) do
     for name, version in pairs(macroset) do
       for v, sequence in ipairs(version) do
         GSE.TranslateSequenceFromTo(sequence, "enUS", "enUS", name)

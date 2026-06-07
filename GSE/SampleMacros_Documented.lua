@@ -37,7 +37,7 @@ Statics.DocumentedSampleMacros[1] = {
     },
     ["Protection_TankRotation"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Protection
+        SpecID = 1,
         Talents = "3/3/5/2/1/3/0",
         Default = 1,
         Icon = "Ability_Warrior_DefensiveStance",
@@ -65,7 +65,7 @@ Statics.DocumentedSampleMacros[1] = {
 Statics.DocumentedSampleMacros[2] = {
     ["Retribution_DPS"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Retribution
+        SpecID = 2,
         Talents = "2/5/3/2/1/3/3",
         Default = 1,
         Icon = "Spell_Holy_AuraOfLight",
@@ -88,7 +88,7 @@ Statics.DocumentedSampleMacros[2] = {
     },
     ["Holy_Healing"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Holy
+        SpecID = 2,
         Talents = "5/5/0/1/3/2/0",
         Default = 1,
         Icon = "Spell_Holy_HolyBolt",
@@ -101,7 +101,7 @@ Statics.DocumentedSampleMacros[2] = {
                 "/cast Holy Shock",
                 "/cast Flash of Light",
                 "/cast Holy Light",
-                "/cast Word of Glory",
+                "/cast Holy Light",
                 KeyRelease = {
                 },
             },
@@ -113,7 +113,7 @@ Statics.DocumentedSampleMacros[2] = {
 Statics.DocumentedSampleMacros[3] = {
     ["BeastMastery_DPS"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Beast Mastery
+        SpecID = 3,
         Talents = "5/2/2/1/3/1/1",
         Default = 1,
         Icon = "Ability_Hunter_BeastCall",
@@ -139,7 +139,7 @@ Statics.DocumentedSampleMacros[3] = {
     },
     ["Marksmanship_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Marksmanship
+        SpecID = 3,
         Talents = "2/3/3/2/1/3/1",
         Default = 1,
         Icon = "Ability_Marksmanship",
@@ -167,7 +167,7 @@ Statics.DocumentedSampleMacros[3] = {
 Statics.DocumentedSampleMacros[4] = {
     ["Combat_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Combat
+        SpecID = 4,
         Talents = "2/3/5/2/1/3/0",
         Default = 1,
         Icon = "Ability_BackStab",
@@ -176,7 +176,6 @@ Statics.DocumentedSampleMacros[4] = {
                 StepFunction = "Sequential",
                 KeyPress = {
                     "/startattack",
-                    "/cast [nostealth] Stealth",
                 },
                 "/cast Sinister Strike",
                 "/cast Slice and Dice",
@@ -190,7 +189,7 @@ Statics.DocumentedSampleMacros[4] = {
     },
     ["Assassination_DPS"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Assassination
+        SpecID = 4,
         Talents = "5/2/0/3/3/1/1",
         Default = 1,
         Icon = "Ability_Rogue_Eviscerate",
@@ -199,7 +198,6 @@ Statics.DocumentedSampleMacros[4] = {
                 StepFunction = "Sequential",
                 KeyPress = {
                     "/startattack",
-                    "/cast [nostealth] Stealth",
                 },
                 "/cast Mutilate",
                 "/cast Slice and Dice",
@@ -217,7 +215,7 @@ Statics.DocumentedSampleMacros[4] = {
 Statics.DocumentedSampleMacros[5] = {
     ["Shadow_DPS"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Shadow
+        SpecID = 5,
         Talents = "0/3/5/2/1/5/0",
         Default = 1,
         Icon = "Spell_Shadow_ShadowWordPain",
@@ -241,7 +239,7 @@ Statics.DocumentedSampleMacros[5] = {
     },
     ["Holy_Healing"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Holy
+        SpecID = 5,
         Talents = "2/5/5/0/3/0/0",
         Default = 1,
         Icon = "Spell_Holy_GuardianSpirit",
@@ -267,7 +265,7 @@ Statics.DocumentedSampleMacros[5] = {
 Statics.DocumentedSampleMacros[6] = {
     ["Frost_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Frost
+        SpecID = 6,
         Talents = "2/3/5/2/1/3/0",
         Default = 1,
         Icon = "Spell_Frost_FrostNova",
@@ -291,7 +289,7 @@ Statics.DocumentedSampleMacros[6] = {
     },
     ["Blood_Tank"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Blood
+        SpecID = 6,
         Talents = "5/3/2/2/1/2/0",
         Default = 1,
         Icon = "Spell_Deathknight_BloodPresence",
@@ -319,7 +317,7 @@ Statics.DocumentedSampleMacros[6] = {
 Statics.DocumentedSampleMacros[7] = {
     ["Elemental_DPS"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Elemental
+        SpecID = 7,
         Talents = "5/3/0/2/1/3/2",
         Default = 1,
         Icon = "Spell_Nature_Lightning",
@@ -342,7 +340,7 @@ Statics.DocumentedSampleMacros[7] = {
     },
     ["Enhancement_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Enhancement
+        SpecID = 7,
         Talents = "2/5/3/3/1/2/0",
         Default = 1,
         Icon = "Spell_Nature_LightningShield",
@@ -369,7 +367,7 @@ Statics.DocumentedSampleMacros[7] = {
 Statics.DocumentedSampleMacros[8] = {
     ["Frost_DPS"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Frost
+        SpecID = 8,
         Talents = "2/3/3/3/1/5/0",
         Default = 1,
         Icon = "Spell_Frost_FrostBolt02",
@@ -392,7 +390,7 @@ Statics.DocumentedSampleMacros[8] = {
     },
     ["Fire_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Fire
+        SpecID = 8,
         Talents = "2/5/3/0/3/2/1",
         Default = 1,
         Icon = "Spell_Fire_FireBolt02",
@@ -419,7 +417,7 @@ Statics.DocumentedSampleMacros[8] = {
 Statics.DocumentedSampleMacros[9] = {
     ["Affliction_DPS"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Affliction
+        SpecID = 9,
         Talents = "5/2/2/3/1/2/0",
         Default = 1,
         Icon = "Spell_Shadow_DeathCoil",
@@ -443,7 +441,7 @@ Statics.DocumentedSampleMacros[9] = {
     },
     ["Destruction_DPS"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Destruction
+        SpecID = 9,
         Talents = "0/3/5/2/1/5/0",
         Default = 1,
         Icon = "Spell_Shadow_RainOfFire",
@@ -470,7 +468,7 @@ Statics.DocumentedSampleMacros[9] = {
 Statics.DocumentedSampleMacros[11] = {
     ["Balance_DPS"] = {
         Author = "GSE Team",
-        SpecID = 1, -- Balance
+        SpecID = 11,
         Talents = "5/3/0/2/3/1/2",
         Default = 1,
         Icon = "Spell_Nature_StarFall",
@@ -494,7 +492,7 @@ Statics.DocumentedSampleMacros[11] = {
     },
     ["Feral_Cat_DPS"] = {
         Author = "GSE Team",
-        SpecID = 2, -- Feral
+        SpecID = 11,
         Talents = "0/5/5/2/3/1/0",
         Default = 1,
         Icon = "Ability_Druid_CatForm",
@@ -518,7 +516,7 @@ Statics.DocumentedSampleMacros[11] = {
     },
     ["Restoration_Healing"] = {
         Author = "GSE Team",
-        SpecID = 3, -- Restoration
+        SpecID = 11,
         Talents = "2/0/3/3/5/2/1",
         Default = 1,
         Icon = "Spell_Nature_Rejuvenation",
@@ -548,15 +546,15 @@ function GSE.LoadDocumentedSampleMacros()
     -- Add samples for the current class if they exist
     if Statics.DocumentedSampleMacros[currentClassID] then
         for sequenceName, sequence in pairs(Statics.DocumentedSampleMacros[currentClassID]) do
-            -- Check if sequence already exists
             if GSE.isEmpty(GSELibrary[currentClassID]) then
                 GSELibrary[currentClassID] = {}
             end
             
-            if GSE.isEmpty(GSELibrary[currentClassID][sequenceName]) then
-                -- Add the sample sequence
+            local existing = GSELibrary[currentClassID][sequenceName]
+            if GSE.isEmpty(existing) or not existing._GSEVersion then
                 GSELibrary[currentClassID][sequenceName] = sequence
-                GSE.Print("Sample macro added: " .. sequenceName, "GSE")
+                GSELibrary[currentClassID][sequenceName]._GSEVersion = 1
+                GSE.Print("Sample macro loaded: " .. sequenceName, "GSE")
             end
         end
     end

@@ -2,7 +2,7 @@
 ## Title: GSE
 ## Notes: Allows you to execute a sequence of macros without stopping on unusable spells.
 ## Author: TimothyLuke, Gummed, cerberus
-## Version: 2204-wotlk
+## Version: 2205-wotlk
 ## SavedVariables: GSEOptions GSELibrary
 ## OptionalDeps: WeakAuras
 
@@ -31,13 +31,13 @@ Lib\AceConfig-3.0\AceConfig-3.0.xml
 Lib\AceComm-3.0\AceComm-3.0.xml
 Lib\AceTab-3.0\AceTab-3.0.xml
 Lib\AceSerializer-3.0\AceSerializer-3.0.xml
-Lib\AceHook-3.0.xml\AceHook-3.0.xml
-Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
-Libs\LibCompress\lib.xml
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-Libs\LibParse\load.xml
+Lib\AceHook-3.0\AceHook-3.0.xml
+Lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Lib\LibCompress\lib.xml
+Lib\LibStub\LibStub.lua
+Lib\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Lib\LibParse\load.xml
 
 #Setup Localisation
 Localization\ModL_enUS.lua
