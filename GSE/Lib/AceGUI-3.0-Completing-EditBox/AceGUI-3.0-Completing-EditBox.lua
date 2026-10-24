@@ -9,7 +9,7 @@ Usage:
 	a single table containing .include and .exclude fields pointing to such.
 
 Examples:
-	local AceGUI = LibStub("AceGUI-3.0")
+	local AceGUI = LibStub("GSE-AceGUI-3.0")
 	local Completing = LibStub("AceGUI-3.0-Completing-EditBox")
 
 	-- For premade lists and list templates, see FrameXML/AutoComplete.lua
@@ -42,7 +42,7 @@ local MAJOR, MINOR = "AceGUI-3.0-Completing-EditBox", 1  -- possibly change mino
 local lib, oldminor = LibStub:NewLibrary(MAJOR,MINOR)
 if not lib then return end
 
-local AceGUI = LibStub("AceGUI-3.0")
+local AceGUI = LibStub("GSE-AceGUI-3.0")
 
 
 local function CompletingEditBox_OnEscapePressed (editbox)

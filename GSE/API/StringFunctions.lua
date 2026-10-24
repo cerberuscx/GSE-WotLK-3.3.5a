@@ -35,6 +35,17 @@ function GSE.Ltrim(s)
   return (s:gsub("^%s*", ""))
 end
 
+--- Normalize a sequence name for storage and macro use.
+function GSE.NormalizeSequenceName(name)
+  if GSE.isEmpty(name) then
+    return name
+  end
+  name = GSE.TrimWhiteSpace(tostring(name))
+  name = string.gsub(name, "%s+", "_")
+  name = string.gsub(name, ",", "_")
+  return name
+end
+
 --- remove WoW Text Markup from a sequence
 function GSE.UnEscapeSequence(sequence)
 

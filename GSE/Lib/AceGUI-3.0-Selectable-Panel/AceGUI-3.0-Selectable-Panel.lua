@@ -1,7 +1,7 @@
 local Type = "SelectablePanel"
-local Version = 1
+local Version = 5
 
-local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local AceGUI = LibStub and LibStub("GSE-AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 
@@ -42,31 +42,37 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local function OnAcquire(self)
 	self:SetWidth(300)
 	self:SetHeight(100)
+	if self.border then
+		self.border:SetAlpha(0)
+	end
+	if self.selectedBackground then
+		self.selectedBackground:SetAlpha(0)
+	end
+	if self.frame and self.frame.SetBackdropBorderColor then
+		self.frame:SetBackdropBorderColor(1, 1, 1, 0)
+	end
+	self.Clicked = false
+	self.ResizeContent = nil
 end
 
 local function OnRelease(self)
 	self.frame:ClearAllPoints()
 	self.frame:Hide()
 	self.Clicked = false
+	self.ResizeContent = nil
 end
 
 local function SelectablePanel_OnClick(self, button)
   if button == "LeftButton" then
-    if self.Clicked then
-      self.Clicked = false
-			self.obj.border:SetAlpha(0) -- half-alpha light grey
-		else
-			self.obj.border:SetAlpha(0.6) -- half-alpha light grey
-			self.Clicked = true
-    end
+    self.obj:SetClicked(not self.obj.Clicked)
   end
-	self.obj:Fire("OnClick", self.Clicked, button)
+	self.obj:Fire("OnClick", self.obj.Clicked, button)
 end
 
 
 local function LayoutFinished(self, width, height)
 	if self.noAutoHeight then return end
-	self:SetHeight((height or 0) + 10)
+	self:SetHeight((height or 0) + 20)
 end
 
 local function OnWidthSet(self, width)
@@ -77,6 +83,9 @@ local function OnWidthSet(self, width)
 	end
 	content:SetWidth(contentwidth)
 	content.width = contentwidth
+	if self.ResizeContent then
+		self.ResizeContent(width)
+	end
 end
 
 local function OnHeightSet(self, height)
@@ -90,12 +99,24 @@ local function OnHeightSet(self, height)
 end
 
 local function SetClicked(self, boole)
-  if boole then
-		self.border:SetAlpha(0.6) -- half-alpha light grey
+	if boole then
 		self.Clicked = true
+		self.border:SetAlpha(1)
+		if self.selectedBackground then
+			self.selectedBackground:SetAlpha(0.18)
+		end
+		if self.frame and self.frame.SetBackdropBorderColor then
+			self.frame:SetBackdropBorderColor(self.selectedR or 1, self.selectedG or 0.82, self.selectedB or 0, 0.65)
+		end
 	else
 		self.Clicked = false
-		self.border:SetAlpha(0) -- half-alpha light grey
+		self.border:SetAlpha(0)
+		if self.selectedBackground then
+			self.selectedBackground:SetAlpha(0)
+		end
+		if self.frame and self.frame.SetBackdropBorderColor then
+			self.frame:SetBackdropBorderColor(self.selectedR or 1, self.selectedG or 0.82, self.selectedB or 0, 0)
+		end
 	end
 end
 
@@ -105,6 +126,20 @@ end
 
 local function GetKey(self)
   return self.Key
+end
+
+local function SetSelectedColor(self, r, g, b)
+	self.selectedR, self.selectedG, self.selectedB = r or 1, g or 0.82, b or 0
+	local selected = self.Clicked
+	self.border:SetVertexColor(self.selectedR, self.selectedG, self.selectedB, 1)
+	self.border:SetAlpha(selected and 1 or 0)
+	if self.selectedBackground then
+		self.selectedBackground:SetVertexColor(self.selectedR, self.selectedG, self.selectedB, 1)
+		self.selectedBackground:SetAlpha(selected and 0.18 or 0)
+	end
+	if self.frame and self.frame.SetBackdropBorderColor then
+		self.frame:SetBackdropBorderColor(self.selectedR, self.selectedG, self.selectedB, selected and 0.65 or 0)
+	end
 end
 
 
@@ -127,6 +162,7 @@ local function Constructor()
   self.SetKey = SetKey
 	self.GetKey = GetKey
   self.SetClicked = SetClicked
+	self.SetSelectedColor = SetSelectedColor
 
 	frame.obj = self
 
@@ -137,15 +173,36 @@ local function Constructor()
   local highlightTexture = frame:CreateTexture(nil, "HIGHLIGHT")
   highlightTexture:SetAllPoints(true)
   highlightTexture:SetTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar")
-	highlightTexture:SetAlpha(1)
+	highlightTexture:SetAlpha(0.12)
   frame:EnableMouse(true)
+
+  frame:SetBackdrop({
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    edgeSize = 4,
+    insets = { left = 2, right = 2, top = 2, bottom = 2 },
+  })
+  frame:SetBackdropBorderColor(1, 1, 1, 0)
+
+  local background = frame:CreateTexture(nil, "BACKGROUND")
+  background:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+  background:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+  background:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+  background:SetVertexColor(0, 0, 0, 0.22)
+
+  local selectedBackground = frame:CreateTexture(nil, "BACKGROUND")
+  selectedBackground:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+  selectedBackground:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+  selectedBackground:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+  selectedBackground:SetVertexColor(1.0, 0.82, 0.0, 1)
+  selectedBackground:SetAlpha(0)
+  self.selectedBackground = selectedBackground
 
   local border=frame:CreateTexture(nil, "BACKGROUND")
 	border:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-	border:SetPoint("TOPLEFT",-2,2)
-  border:SetPoint("BOTTOMRIGHT",2,-2)
-	border:SetVertexColor(1.0, 0.96, 0.41, 0) -- half-alpha light grey
-
+	border:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+  border:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 2, 2)
+  border:SetWidth(4)
+	border:SetVertexColor(1.0, 0.82, 0.0, 0)
 
   self.border = border
 
@@ -153,8 +210,8 @@ local function Constructor()
 	local content = CreateFrame("Frame",nil,frame)
 	self.content = content
 	content.obj = self
-	content:SetPoint("TOPLEFT",frame,"TOPLEFT",0,0)
-	content:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",0,0)
+	content:SetPoint("TOPLEFT",frame,"TOPLEFT",10,-10)
+	content:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",-10,10)
 
 
 	AceGUI:RegisterAsContainer(self)

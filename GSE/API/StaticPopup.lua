@@ -3,6 +3,30 @@ local L = GSE.L
 
 GSE.GUIEditFrame = {}
 
+-- Raise GSE's Blizzard static popups above the AceGUI editor/viewer frames.
+-- AceGUI Frames use FULLSCREEN_DIALOG at frame level 100; StaticPopup uses DIALOG.
+local function GSE_RaisePopup(self)
+  if not self then return end
+  self:SetFrameStrata("FULLSCREEN_DIALOG")
+  local base = 100
+  if GSE.GUIEditFrame and GSE.GUIEditFrame.frame then
+    base = math.max(base, GSE.GUIEditFrame.frame:GetFrameLevel() or 0)
+  end
+  local target = base + 50
+  if (self:GetFrameLevel() or 0) < target then
+    self:SetFrameLevel(target)
+  end
+end
+
+local function GSE_ApplyPopupRaise(dialog)
+  if type(dialog) ~= "table" then return end
+  local originalOnShow = dialog.OnShow
+  dialog.OnShow = function(self, ...)
+    if originalOnShow then originalOnShow(self, ...) end
+    GSE_RaisePopup(self)
+  end
+end
+
 StaticPopupDialogs["GSE_ConfirmReloadUIDialog"] = {
   text = L["You need to reload the User Interface to complete this task.  Would you like to do this now?"],
   button1 = L["Yes"],
@@ -150,3 +174,16 @@ StaticPopupDialogs["GSE-DeleteMacroDialog"] = {
   hideOnEscape = true,
   preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 }
+
+for _, dialogName in ipairs({
+  "GSE_ConfirmReloadUIDialog",
+  "GS-DebugOutput",
+  "GSE_UPDATE_AVAILABLE",
+  "GSE_SEQUENCEHELP",
+  "GSE-SampleMacroDialog",
+  "GSE-MacroImportSuccess",
+  "GSE-MacroImportFailure",
+  "GSE-DeleteMacroDialog",
+}) do
+  GSE_ApplyPopupRaise(StaticPopupDialogs[dialogName])
+end

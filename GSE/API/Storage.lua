@@ -104,75 +104,88 @@ end
 function GSE.OOCAddSequenceToCollection(sequenceName, sequence, classid)
   local confirmationtext = ""
 
-  -- Remove Spaces or commas from SequenceNames and replace with _'s
-  if not GSE.isEmpty(sequenceName) then
-    sequenceName = string.gsub(sequenceName, " ", "_")
-    sequenceName = string.gsub(sequenceName, ",", "_")
-  else
+  if GSE.isEmpty(sequenceName) then
     return false, L["No Sequence Name"]
   end
+  if type(sequence) ~= "table" or type(sequence.MacroVersions) ~= "table" then
+    return false, L["Unable to process content.  Fix table and try again."]
+  end
 
-  -- CHeck for colissions
-  local found = false
+  local originalName = sequenceName
+  sequenceName = GSE.NormalizeSequenceName(sequenceName)
+  local manualSave = sequence.ManualIntervention == true
+
+  -- Resolve the class id
   if (GSE.isEmpty(classid) or classid == 0) and not GSE.isEmpty(sequence.SpecID) then
     classid = tonumber(GSE.GetClassIDforSpec(sequence.SpecID))
   elseif GSE.isEmpty(sequence.SpecID) then
-	local sidy=GSE.GetCurrentSpecID()
+    local sidy = GSE.GetCurrentSpecID()
     sequence.SpecID = sidy
     classid = tonumber(GSE.GetClassIDforSpec(sequence.SpecID))
   end
-  if GSE.isEmpty(GSELibrary[classid]) then
+  classid = tonumber(classid) or GSE.GetCurrentClassID()
+
+  if type(GSELibrary[classid]) ~= "table" then
     GSELibrary[classid] = {}
   end
-  if not GSE.isEmpty(GSELibrary[classid][sequenceName]) then
-      found = true
-  end
-  if found then
-    if GSE.isEmpty(GSELibrary[classid][sequenceName].ManualIntervention) then --- Added by me
-		  -- Macro hasnt been touched.
-		  GSE.PrintDebugMessage(L["No changes were made to "].. sequenceName, "Storage")
-		
-		-- check if source the same.  If so ignore
-		if sequence.MacroVersions and GSELibrary[classid] and GSELibrary[classid][sequenceName] and GSELibrary[classid][sequenceName].MacroVersions then
-		  for k,v in ipairs(sequence.MacroVersions) do
-		    for i, j in ipairs(GSELibrary[classid][sequenceName].MacroVersions) do
-			if GSE.CompareSequence(v,j) then
-			  GSE.PrintDebugMessage("Macro Version already exists", "Storage")
-			else
-			  GSE.Print (string.format(L["A new version of %s has been added."], sequenceName), GNOME)
-			  GSE.PrintDebugMessage("adding ".. k, "Storage")
-			  table.insert(GSELibrary[classid][sequenceName].MacroVersions, v)
 
-			  GSE.PrintDebugMessage("Finished colliding entry entry", "Storage")
-			end
-		    end
-		  end
-		end
-	end--- Added by me
+  -- If the caller passed a spaced name, clean up any invalid placeholder left behind.
+  if originalName ~= sequenceName then
+    local old = GSELibrary[classid][originalName]
+    if type(old) ~= "table" or type(old.MacroVersions) ~= "table" then
+      GSELibrary[classid][originalName] = nil
+    end
+  end
+
+  local existing = GSELibrary[classid][sequenceName]
+  local found = type(existing) == "table" and type(existing.MacroVersions) == "table"
+
+  if found and not manualSave then
+    -- Import/merge path. Do not blindly replace an existing sequence.
+    GSE.PrintDebugMessage(L["No changes were made to "] .. sequenceName, "Storage")
+    for k, v in ipairs(sequence.MacroVersions) do
+      local exists = false
+      for i, j in ipairs(existing.MacroVersions) do
+        if GSE.CompareSequence(v, j) then
+          exists = true
+          GSE.PrintDebugMessage("Macro Version already exists", "Storage")
+          break
+        end
+      end
+      if not exists then
+        GSE.Print(string.format(L["A new version of %s has been added."], sequenceName), GNOME)
+        GSE.PrintDebugMessage("adding " .. k, "Storage")
+        table.insert(existing.MacroVersions, v)
+        GSE.PrintDebugMessage("Finished colliding entry entry", "Storage")
+      end
+    end
   else
-    -- New Sequence
+    -- New sequence or a manual editor save: store the sequence as-is.
     if GSE.isEmpty(sequence.Author) then
-      -- set to unknown author
       sequence.Author = "Unknown Author"
       confirmationtext = confirmationtext .. " " .. L["Sequence Author set to Unknown"] .. "."
     end
     if GSE.isEmpty(sequence.Talents) then
-      -- set to currentSpecID
       sequence.Talents = "?,?,?,?,?,?,?"
       confirmationtext = confirmationtext .. " " .. L["No Help Information Available"] .. "."
     end
-
-    GSELibrary[classid][sequenceName] = {}
     GSELibrary[classid][sequenceName] = sequence
   end
+
   if not GSE.isEmpty(confirmationtext) then
     GSE.Print(GSEOptions.EmphasisColour .. sequenceName .. "|r" .. L[" was imported with the following errors."] .. " " .. confirmationtext, GNOME)
   end
-  if classid == GSE.GetCurrentClassID() or classid == 0 then
-     GSE.UpdateSequence(sequenceName, sequence.MacroVersions[sequence.Default])
+
+  local stored = GSELibrary[classid][sequenceName]
+  if type(stored) == "table" and type(stored.MacroVersions) == "table" then
+    local version = stored.Default or 1
+    local macroVersion = stored.MacroVersions[version] or stored.MacroVersions[1]
+    if macroVersion and (classid == GSE.GetCurrentClassID() or classid == 0) then
+      GSE.UpdateSequence(sequenceName, macroVersion)
+    end
+    stored.ManualIntervention = false
   end
-  --- Added by me
-  GSELibrary[classid][sequenceName].ManualIntervention = false
+  return true
 end
 
 --- Load a collection of Sequences
@@ -298,15 +311,74 @@ function GSE.ImportSequence(importStr, legacy, createicon)
   return success, returnmessage
 end
 
+--- Remove entries from GSELibrary that cannot be treated as sequences.
+--- Also moves valid sequences stored under a spaced name to their normalized key.
+function GSE.SanitizeSequenceLibrary()
+  local removed = {}
+  local migrated = {}
+  if type(GSELibrary) ~= "table" then
+    return removed, migrated
+  end
+
+  for classid, sequences in pairs(GSELibrary) do
+    if type(sequences) ~= "table" then
+      GSELibrary[classid] = nil
+      table.insert(removed, tostring(classid))
+    else
+      for name, sequence in pairs(sequences) do
+        if type(sequence) ~= "table" or type(sequence.MacroVersions) ~= "table" then
+          sequences[name] = nil
+          table.insert(removed, tostring(classid) .. ":" .. tostring(name))
+        else
+          local normalized = GSE.NormalizeSequenceName(name)
+          if normalized and normalized ~= name then
+            table.insert(migrated, {classid = classid, old = name, new = normalized, sequence = sequence})
+          end
+        end
+      end
+    end
+  end
+
+  for _, entry in ipairs(migrated) do
+    local sequences = GSELibrary[entry.classid]
+    if type(sequences) == "table" then
+      local existing = sequences[entry.new]
+      if type(existing) ~= "table" or type(existing.MacroVersions) ~= "table" then
+        sequences[entry.new] = entry.sequence
+      end
+      sequences[entry.old] = nil
+      table.insert(removed, tostring(entry.classid) .. ":" .. tostring(entry.old))
+    end
+  end
+
+  if #removed > 0 then
+    GSE.Print("GSE repaired saved data: removed or renamed " .. #removed .. " invalid sequence entr" .. (#removed == 1 and "y" or "ies") .. " (" .. table.concat(removed, ", ") .. ").", "GSE")
+  end
+  return removed, migrated
+end
+
 function GSE.ReloadSequences()
   GSE.PrintDebugMessage("Reloading Sequences")
-  for name, sequence in pairs(GSELibrary[GSE.GetCurrentClassID()]) do
-    GSE.UpdateSequence(name, sequence.MacroVersions[GSE.GetActiveSequenceVersion(name)])
+  local classid = GSE.GetCurrentClassID()
+  if type(GSELibrary[classid]) == "table" then
+    for name, sequence in pairs(GSELibrary[classid]) do
+      if type(sequence) == "table" and type(sequence.MacroVersions) == "table" then
+        local version = GSE.GetActiveSequenceVersion(name)
+        local macroVersion = sequence.MacroVersions[version] or sequence.MacroVersions[1]
+        if macroVersion then
+          GSE.UpdateSequence(name, macroVersion)
+        end
+      end
+    end
   end
-  if GSEOptions.CreateGlobalButtons then
-    if not GSE.isEmpty(GSELibrary[0]) then
-      for name, sequence in pairs(GSELibrary[0]) do
-        GSE.UpdateSequence(name, sequence.MacroVersions[GSE.GetActiveSequenceVersion(name)])
+  if GSEOptions.CreateGlobalButtons and type(GSELibrary[0]) == "table" then
+    for name, sequence in pairs(GSELibrary[0]) do
+      if type(sequence) == "table" and type(sequence.MacroVersions) == "table" then
+        local version = GSE.GetActiveSequenceVersion(name)
+        local macroVersion = sequence.MacroVersions[version] or sequence.MacroVersions[1]
+        if macroVersion then
+          GSE.UpdateSequence(name, macroVersion)
+        end
       end
     end
   end
@@ -833,9 +905,25 @@ end
 --- Check if a macro has been created and if the create flag is true and the macro hasnt been created then create it.
 function GSE.OOCCheckMacroCreated(SequenceName, create)
   local found = false
-  local classid = GSE.GetCurrentClassID()
-  if GSE.isEmpty(GSELibrary[GSE.GetCurrentClassID()][SequenceName]) then
-    classid = 0
+  local sequence
+  local currentClassID = GSE.GetCurrentClassID()
+  if type(GSELibrary[currentClassID]) == "table" then
+    sequence = GSELibrary[currentClassID][SequenceName]
+  end
+  if type(sequence) ~= "table" and type(GSELibrary[0]) == "table" then
+    sequence = GSELibrary[0][SequenceName]
+  end
+  if type(sequence) ~= "table" then
+    for _, library in pairs(GSELibrary) do
+      if type(library) == "table" and type(library[SequenceName]) == "table" then
+        sequence = library[SequenceName]
+        break
+      end
+    end
+  end
+  if GSE.isEmpty(SequenceName) or type(sequence) ~= "table" or type(sequence.MacroVersions) ~= "table" then
+    GSE.PrintDebugMessage("OOCCheckMacroCreated: sequence not found: " .. tostring(SequenceName), "Storage")
+    return false
   end
   local macroIndex = GetMacroIndexByName(SequenceName)
   if macroIndex and macroIndex ~= 0 then
@@ -845,7 +933,7 @@ function GSE.OOCCheckMacroCreated(SequenceName, create)
     end
   else
     if create then
-      local icon = (GSE.isEmpty(GSELibrary[classid][SequenceName].Icon) and Statics.QuestionMark or GSELibrary[classid][SequenceName].Icon)
+      local icon = (GSE.isEmpty(sequence.Icon) and Statics.QuestionMark or sequence.Icon)
       GSE.CreateMacroIcon(SequenceName, icon)
       found = true
     end
@@ -865,6 +953,33 @@ function GSE.DeleteMacroStub(sequenceName)
       DeleteMacro(sequenceName)
     end
   end
+end
+
+--- Rename a GSE macro stub when its sequence is renamed.
+function GSE.RenameSequenceMacroStub(oldName, newName)
+  if GSE.isEmpty(oldName) or GSE.isEmpty(newName) or oldName == newName then
+    return
+  end
+  local oldIndex = GetMacroIndexByName(oldName)
+  if not oldIndex or oldIndex == 0 then
+    return
+  end
+  local _, oldIcon, oldBody = GetMacroInfo(oldIndex)
+  if not oldBody then
+    return
+  end
+  local trimmedOld = oldBody:gsub("[^%w ]", "")
+  local expectedOld = GSE.CreateMacroString(oldName):gsub("[^%w ]", "")
+  if string.lower(trimmedOld) ~= string.lower(expectedOld) then
+    return
+  end
+  local newIndex = GetMacroIndexByName(newName)
+  if newIndex and newIndex ~= 0 and newIndex ~= oldIndex then
+    GSE.Print(string.format(L["A macro named %s already exists. The old macro was removed."], newName), GNOME)
+    DeleteMacro(oldIndex)
+    return
+  end
+  EditMacro(oldIndex, newName, oldIcon, GSE.CreateMacroString(newName))
 end
 
 
@@ -888,22 +1003,28 @@ function GSE.GetSequenceNames()
       GSEOptions.filterList[Statics.All] = false
       GSEOptions.filterList[Statics.Global] = true
     end
-    if GSEOptions.filterList[Statics.All] or k == GSE.GetCurrentClassID()  then
-      for i,j in pairs(GSELibrary[k]) do
-        if k == GSE.GetCurrentClassID() and GSEOptions.filterList["Class"] then
-          keyset[k .. "," .. i] = i
-        elseif k == GSE.GetCurrentClassID() and not GSEOptions.filterList["Class"] then
-          if j.SpecID == GSE.GetCurrentSpecID() or j.SpecID == GSE.GetCurrentClassID() then
-            keyset[k .. "," .. i] = i
-          end
-        else
-          keyset[k .. "," .. i] = i
-        end
-      end
-    else
-      if k == 0 and GSEOptions.filterList[Statics.Global] then
+    if type(GSELibrary[k]) == "table" then
+      if GSEOptions.filterList[Statics.All] or k == GSE.GetCurrentClassID()  then
         for i,j in pairs(GSELibrary[k]) do
-          keyset[k .. "," .. i] = i
+          if type(j) == "table" then
+            if k == GSE.GetCurrentClassID() and GSEOptions.filterList["Class"] then
+              keyset[k .. "," .. i] = i
+            elseif k == GSE.GetCurrentClassID() and not GSEOptions.filterList["Class"] then
+              if j.SpecID == GSE.GetCurrentSpecID() or j.SpecID == GSE.GetCurrentClassID() then
+                keyset[k .. "," .. i] = i
+              end
+            else
+              keyset[k .. "," .. i] = i
+            end
+          end
+        end
+      else
+        if k == 0 and GSEOptions.filterList[Statics.Global] then
+          for i,j in pairs(GSELibrary[k]) do
+            if type(j) == "table" then
+              keyset[k .. "," .. i] = i
+            end
+          end
         end
       end
     end

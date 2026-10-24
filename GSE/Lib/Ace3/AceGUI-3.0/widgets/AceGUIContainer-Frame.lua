@@ -1,8 +1,8 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame", 21
-local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local Type, Version = "Frame", 32
+local AceGUI = LibStub and LibStub("GSE-AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
@@ -13,16 +13,16 @@ local wipe = table.wipe
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
--- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
--- List them here for Mikk's FindGlobals script
--- GLOBALS: CLOSE
-
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
 local function Button_OnClick(frame)
 	PlaySound("gsTitleOptionExit")
 	frame.obj:Hide()
+end
+
+local function Frame_OnShow(frame)
+	frame.obj:Fire("OnShow")
 end
 
 local function Frame_OnClose(frame)
@@ -79,10 +79,12 @@ local methods = {
 	["OnAcquire"] = function(self)
 		self.frame:SetParent(UIParent)
 		self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+		self.frame:SetFrameLevel(100) -- Lots of room to draw under it
 		self:SetTitle()
 		self:SetStatusText()
 		self:ApplyStatus()
 		self:Show()
+        self:EnableResize(true)
 	end,
 
 	["OnRelease"] = function(self)
@@ -112,6 +114,7 @@ local methods = {
 
 	["SetTitle"] = function(self, title)
 		self.titletext:SetText(title)
+		self.titlebg:SetWidth((self.titletext:GetWidth() or 0) + 10)
 	end,
 
 	["SetStatusText"] = function(self, text)
@@ -124,6 +127,13 @@ local methods = {
 
 	["Show"] = function(self)
 		self.frame:Show()
+	end,
+
+	["EnableResize"] = function(self, state)
+		local func = state and "Show" or "Hide"
+		self.sizer_se[func](self.sizer_se)
+		self.sizer_s[func](self.sizer_s)
+		self.sizer_e[func](self.sizer_e)
 	end,
 
 	-- called to set an external table to store status in
@@ -166,21 +176,28 @@ local PaneBackdrop  = {
 }
 
 local function Constructor()
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", string.format("GSE%s%d", Type, AceGUI:GetNextWidgetNum(Type)), UIParent)
 	frame:Hide()
 
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:SetResizable(true)
 	frame:SetFrameStrata("FULLSCREEN_DIALOG")
+	frame:SetFrameLevel(100) -- Lots of room to draw under it
 	frame:SetBackdrop(FrameBackdrop)
 	frame:SetBackdropColor(0, 0, 0, 1)
-	frame:SetMinResize(400, 200)
+	if frame.SetResizeBounds then -- WoW 10.0
+		frame:SetResizeBounds(400, 200)
+	else
+		frame:SetMinResize(400, 200)
+	end
 	frame:SetToplevel(true)
+	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
 	local closebutton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+	closebutton:SetFrameLevel(frame:GetFrameLevel() + 1)
 	closebutton:SetScript("OnClick", Button_OnClick)
 	closebutton:SetPoint("BOTTOMRIGHT", -27, 17)
 	closebutton:SetHeight(20)
@@ -188,6 +205,7 @@ local function Constructor()
 	closebutton:SetText(CLOSE)
 
 	local statusbg = CreateFrame("Button", nil, frame)
+	statusbg:SetFrameLevel(frame:GetFrameLevel() + 1)
 	statusbg:SetPoint("BOTTOMLEFT", 15, 15)
 	statusbg:SetPoint("BOTTOMRIGHT", -132, 15)
 	statusbg:SetHeight(24)
@@ -212,6 +230,7 @@ local function Constructor()
 	titlebg:SetHeight(40)
 
 	local title = CreateFrame("Frame", nil, frame)
+	title:SetFrameLevel(frame:GetFrameLevel() + 1)
 	title:EnableMouse(true)
 	title:SetScript("OnMouseDown", Title_OnMouseDown)
 	title:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
@@ -235,12 +254,14 @@ local function Constructor()
 	titlebg_r:SetHeight(40)
 
 	local sizer_se = CreateFrame("Frame", nil, frame)
+	sizer_se:SetFrameLevel(frame:GetFrameLevel() + 1)
 	sizer_se:SetPoint("BOTTOMRIGHT")
 	sizer_se:SetWidth(25)
 	sizer_se:SetHeight(25)
-	sizer_se:EnableMouse()
+	sizer_se:EnableMouse(false)
 	sizer_se:SetScript("OnMouseDown",SizerSE_OnMouseDown)
 	sizer_se:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
+	sizer_se:EnableMouse(true)
 
 	local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
 	line1:SetWidth(14)
@@ -255,10 +276,11 @@ local function Constructor()
 	line2:SetHeight(8)
 	line2:SetPoint("BOTTOMRIGHT", -8, 8)
 	line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
-	local x = 0.1 * 8/17
+	x = 0.1 * 8/17
 	line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
 	local sizer_s = CreateFrame("Frame", nil, frame)
+	sizer_s:SetFrameLevel(frame:GetFrameLevel() + 1)
 	sizer_s:SetPoint("BOTTOMRIGHT", -25, 0)
 	sizer_s:SetPoint("BOTTOMLEFT")
 	sizer_s:SetHeight(25)
@@ -267,6 +289,7 @@ local function Constructor()
 	sizer_s:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
 
 	local sizer_e = CreateFrame("Frame", nil, frame)
+	sizer_e:SetFrameLevel(frame:GetFrameLevel() + 1)
 	sizer_e:SetPoint("BOTTOMRIGHT", 0, 25)
 	sizer_e:SetPoint("TOPRIGHT")
 	sizer_e:SetWidth(25)
@@ -276,6 +299,7 @@ local function Constructor()
 
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
+	content:SetFrameLevel(frame:GetFrameLevel() + 1)
 	content:SetPoint("TOPLEFT", 17, -27)
 	content:SetPoint("BOTTOMRIGHT", -17, 40)
 
@@ -283,6 +307,10 @@ local function Constructor()
 		localstatus = {},
 		titletext   = titletext,
 		statustext  = statustext,
+		titlebg     = titlebg,
+		sizer_se    = sizer_se,
+		sizer_s     = sizer_s,
+		sizer_e     = sizer_e,
 		content     = content,
 		frame       = frame,
 		type        = Type

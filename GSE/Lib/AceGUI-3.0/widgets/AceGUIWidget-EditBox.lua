@@ -1,8 +1,8 @@
 --[[-----------------------------------------------------------------------------
 EditBox Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "EditBox", 22
-local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local Type, Version = "EditBox", 31
+local AceGUI = LibStub and LibStub("GSE-AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
@@ -10,25 +10,22 @@ local tostring, pairs = tostring, pairs
 
 -- WoW APIs
 local PlaySound = PlaySound
-local GetCursorInfo, ClearCursor, GetSpellName = GetCursorInfo, ClearCursor, GetSpellName
+local GetMacroInfo = GetMacroInfo
+local GetCursorInfo, ClearCursor, GetSpellInfo = GetCursorInfo, ClearCursor, GetSpellInfo
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = _G
-
--- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
--- List them here for Mikk's FindGlobals script
--- GLOBALS: AceGUIEditBoxInsertLink, ChatFontNormal, OKAY
 
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
-if not AceGUIEditBoxInsertLink then
+if not GSEAceGUIEditBoxInsertLink then
 	-- upgradeable hook
-	hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIEditBoxInsertLink(...) end)
+	hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.GSEAceGUIEditBoxInsertLink(...) end)
 end
 
-function _G.AceGUIEditBoxInsertLink(text)
+function _G.GSEAceGUIEditBoxInsertLink(text)
 	for i = 1, AceGUI:GetWidgetCount(Type) do
-		local editbox = _G["AceGUI-3.0EditBox"..i]
+		local editbox = _G["GSEAceGUI-3.0EditBox"..i]
 		if editbox and editbox:IsVisible() and editbox:HasFocus() then
 			editbox:Insert(text)
 			return true
@@ -59,6 +56,11 @@ local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
 end
 
+local function Frame_OnShowFocus(frame)
+	frame.obj.editbox:SetFocus()
+	frame:SetScript("OnShow", nil)
+end
+
 local function EditBox_OnEscapePressed(frame)
 	AceGUI:ClearFocus()
 end
@@ -76,21 +78,21 @@ end
 local function EditBox_OnReceiveDrag(frame)
 	local self = frame.obj
 	local type, id, info = GetCursorInfo()
+	local name
 	if type == "item" then
-		self:SetText(info)
-		self:Fire("OnEnterPressed", info)
-		ClearCursor()
+		name = info
 	elseif type == "spell" then
-		local name, rank = GetSpellName(id, info)
-		if rank and rank:match("%d") then
-			name = name.."("..rank..")"
-		end
+		name = GetSpellInfo(id, info)
+	elseif type == "macro" then
+		name = GetMacroInfo(id)
+	end
+	if name then
 		self:SetText(name)
 		self:Fire("OnEnterPressed", name)
 		ClearCursor()
+		HideButton(self)
+		AceGUI:ClearFocus()
 	end
-	HideButton(self)
-	AceGUI:ClearFocus()
 end
 
 local function EditBox_OnTextChanged(frame)
@@ -101,6 +103,10 @@ local function EditBox_OnTextChanged(frame)
 		self.lasttext = value
 		ShowButton(self)
 	end
+end
+
+local function EditBox_OnFocusGained(frame)
+	AceGUI:SetFocus(frame.obj)
 end
 
 local function Button_OnClick(frame)
@@ -123,7 +129,9 @@ local methods = {
 		self:SetMaxLetters(0)
 	end,
 
-	-- ["OnRelease"] = nil,
+	["OnRelease"] = function(self)
+		self:ClearFocus()
+	end,
 
 	["SetDisabled"] = function(self, disabled)
 		self.disabled = disabled
@@ -175,6 +183,22 @@ local methods = {
 
 	["SetMaxLetters"] = function (self, num)
 		self.editbox:SetMaxLetters(num or 0)
+	end,
+
+	["ClearFocus"] = function(self)
+		self.editbox:ClearFocus()
+		self.frame:SetScript("OnShow", nil)
+	end,
+
+	["SetFocus"] = function(self)
+		self.editbox:SetFocus()
+		if not self.frame:IsShown() then
+			self.frame:SetScript("OnShow", Frame_OnShowFocus)
+		end
+	end,
+
+	["HighlightText"] = function(self, from, to)
+		self.editbox:HighlightText(from, to)
 	end
 }
 
@@ -183,10 +207,11 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
 	local num  = AceGUI:GetNextWidgetNum(Type)
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", string.format("GSE%s%d", Type, num), UIParent)
 	frame:Hide()
 
-	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox"..num, frame, "InputBoxTemplate")
+	local editbox = CreateFrame("EditBox", "GSEAceGUI-3.0EditBox"..num, frame, "InputBoxTemplate")
+	editbox:SetFrameLevel(frame:GetFrameLevel() + 1)
 	editbox:SetAutoFocus(false)
 	editbox:SetFontObject(ChatFontNormal)
 	editbox:SetScript("OnEnter", Control_OnEnter)
@@ -196,6 +221,7 @@ local function Constructor()
 	editbox:SetScript("OnTextChanged", EditBox_OnTextChanged)
 	editbox:SetScript("OnReceiveDrag", EditBox_OnReceiveDrag)
 	editbox:SetScript("OnMouseDown", EditBox_OnReceiveDrag)
+	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
 	editbox:SetTextInsets(0, 0, 3, 3)
 	editbox:SetMaxLetters(256)
 	editbox:SetPoint("BOTTOMLEFT", 6, 0)
@@ -209,6 +235,7 @@ local function Constructor()
 	label:SetHeight(18)
 
 	local button = CreateFrame("Button", nil, editbox, "UIPanelButtonTemplate")
+	button:SetFrameLevel(editbox:GetFrameLevel() + 1)
 	button:SetWidth(40)
 	button:SetHeight(20)
 	button:SetPoint("RIGHT", -2, 0)

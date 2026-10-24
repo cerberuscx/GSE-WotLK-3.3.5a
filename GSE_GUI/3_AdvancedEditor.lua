@@ -5,7 +5,7 @@ local GSEOptions = GSEOptions
 local Statics = GSE.Static
 local L = GSE.L
 
-local AceGUI = LibStub("AceGUI-3.0")
+local AceGUI = LibStub("GSE-AceGUI-3.0")
 
 local width = GSEOptions.editorWidth
 local height = GSEOptions.editorHeight

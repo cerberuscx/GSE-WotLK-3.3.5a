@@ -5,7 +5,7 @@ local GSEOptions = GSEOptions
 local Statics = GSE.Static
 local L = GSE.L
 
-local AceGUI = LibStub("AceGUI-3.0")
+local AceGUI = LibStub("GSE-AceGUI-3.0")
 
 -- BackdropTemplateMixin doesn't exist in 3.3.5a, backdrop is supported by default
 local frame = CreateFrame("frame", "GSE3", UIParent)

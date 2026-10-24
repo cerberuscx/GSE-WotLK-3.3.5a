@@ -1,7 +1,7 @@
 local GSE = GSE
 local GNOME, _ = ...
 
-local AceGUI = LibStub("AceGUI-3.0")
+local AceGUI = LibStub("GSE-AceGUI-3.0")
 local L = GSE.L
 
 local onpause = false

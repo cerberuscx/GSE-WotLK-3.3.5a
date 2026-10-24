@@ -2,8 +2,8 @@
 BlizOptionsGroup Container
 Simple container widget for the integration of AceGUI into the Blizzard Interface Options
 -------------------------------------------------------------------------------]]
-local Type, Version = "BlizOptionsGroup", 20
-local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local Type, Version = "BlizOptionsGroup", 28
+local AceGUI = LibStub and LibStub("GSE-AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
@@ -36,8 +36,12 @@ local function cancel(frame)
 	frame.obj:Fire("cancel")
 end
 
-local function defaults(frame)
-	frame.obj:Fire("defaults")
+local function default(frame)
+	frame.obj:Fire("default")
+end
+
+local function refresh(frame)
+	frame.obj:Fire("refresh")
 end
 
 --[[-----------------------------------------------------------------------------
@@ -95,13 +99,20 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
-	local frame = CreateFrame("Frame")
+	local frame = CreateFrame("Frame", string.format("GSE%s%d", Type, AceGUI:GetNextWidgetNum(Type)), InterfaceOptionsFramePanelContainer)
+	frame:SetFrameLevel(InterfaceOptionsFramePanelContainer:GetFrameLevel() + 1)
 	frame:Hide()
 
 	-- support functions for the Blizzard Interface Options
 	frame.okay = okay
 	frame.cancel = cancel
-	frame.defaults = defaults
+	frame.default = default
+	frame.refresh = refresh
+
+	-- 10.0 support function aliases (cancel has been removed)
+	frame.OnCommit = okay
+	frame.OnDefault = default
+	frame.OnRefresh = refresh
 
 	frame:SetScript("OnHide", OnHide)
 	frame:SetScript("OnShow", OnShow)
@@ -114,6 +125,7 @@ local function Constructor()
 
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
+	content:SetFrameLevel(frame:GetFrameLevel() + 1)
 	content:SetPoint("TOPLEFT", 10, -10)
 	content:SetPoint("BOTTOMRIGHT", -10, 10)
 

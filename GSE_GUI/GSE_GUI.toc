@@ -2,7 +2,7 @@
 ## Title: GSE GUI
 ## Notes: GSE GUI
 ## Author: TimothyLuke
-## Version: 2205-wotlk
+## Version: 2206-wotlk
 ## Dependencies: GSE
 
 

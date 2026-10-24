@@ -35,13 +35,28 @@ function GSE.GetOptionsTable()
             get = function(info) return GSEOptions.showGSEoocqueue end,
             order = 201
           },
+          showminimapbutton = {
+            name = L["Show Minimap Button"],
+            desc = L["Show the GSE minimap button."],
+            type = "toggle",
+            set = function(info,val)
+              GSEOptions.minimap = GSEOptions.minimap or { hide = false }
+              GSEOptions.minimap.hide = not val
+              local lib = LibStub("LibDBIcon-1.0", true)
+              if lib and lib:IsRegistered("GSE") then
+                lib:Refresh("GSE", GSEOptions.minimap)
+              end
+            end,
+            get = function(info) return not (GSEOptions.minimap and GSEOptions.minimap.hide) end,
+            order = 202
+          },
           hideLogin = {
             name = L["Hide Login Message"],
             desc = L["Hides the message that GSE is loaded."],
             type = "toggle",
             set = function(info,val) GSEOptions.HideLoginMessage = val end,
             get = function(info) return GSEOptions.HideLoginMessage end,
-            order = 202
+            order = 203
           },
 --          realtimeparse = {
 --            name = L["Use Realtime Parsing"],

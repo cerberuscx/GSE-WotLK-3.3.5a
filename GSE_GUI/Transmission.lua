@@ -8,7 +8,7 @@ local Statics = GSE.Static
 local GSold = false
 local L = GSE.L
 
-local AceGUI = LibStub("AceGUI-3.0")
+local AceGUI = LibStub("GSE-AceGUI-3.0")
 local Completing = LibStub("AceGUI-3.0-Completing-EditBox")
 
 

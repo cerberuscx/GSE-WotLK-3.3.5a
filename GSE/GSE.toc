@@ -2,7 +2,7 @@
 ## Title: GSE
 ## Notes: Allows you to execute a sequence of macros without stopping on unusable spells.
 ## Author: TimothyLuke, Gummed, cerberus
-## Version: 2205-wotlk
+## Version: 2206-wotlk
 ## SavedVariables: GSEOptions GSELibrary
 ## OptionalDeps: WeakAuras
 
